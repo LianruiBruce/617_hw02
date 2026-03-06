@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Puzzle or Real Answer? A Data Remix of the New-Look Utah Jazz</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background:#080f1e; color:#e2e8f0; font-family:'Inter',system-ui,sans-serif; margin:0; }
+
+        .court-line { fill:none; stroke:rgba(148,163,184,.45); stroke-width:2px; }
+        .court-paint { fill:rgba(30,41,59,.5); stroke:rgba(148,163,184,.45); stroke-width:2px; }
+        .hoop { fill:none; stroke:#fb7185; stroke-width:3px; }
+        .backboard { fill:none; stroke:rgba(226,232,240,.8); stroke-width:4px; }
+
+        .shot-dot { cursor:pointer; }
+
+        .chip { cursor:pointer; transition:opacity .15s,transform .12s,border-color .15s; border:2px solid transparent; }
+        .chip:hover { transform:translateY(-2px); }
+        .chip.inactive { opacity:.35; filter:grayscale(100%); }
+        .chip.focused { border-color:#2dd4bf; box-shadow:0 0 12px rgba(45,212,191,.25); }
+
+        .role-bar { cursor:pointer; transition:opacity .12s; rx:3; }
+        .role-bar:hover { opacity:1!important; filter:brightness(1.2); }
+
+        .risk-bar { cursor:pointer; transition:opacity .15s; rx:4; }
+        .risk-bar:hover { opacity:1!important; }
+
+        a.src { color:#7dd3fc; } a.src:hover { color:#bae6fd; }
+
+        .d3-tooltip {
+            pointer-events:none; position:fixed; z-index:100;
+            background:rgba(10,18,32,.94); border:1px solid #334155;
+            border-radius:8px; padding:8px 14px; font-size:12px; color:#e2e8f0;
+            max-width:320px; line-height:1.5; box-shadow:0 8px 24px rgba(0,0,0,.45);
+            opacity:0; transition:opacity .12s;
+        }
+    </style>
+</head>
+<body>
+<div class="max-w-6xl mx-auto px-5 py-10 md:py-16">
+
+    <header class="mb-14">
+        <div class="text-xs uppercase tracking-[.22em] text-teal-400 mb-3">Data Story Remix &middot; 2025-26 Season</div>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight max-w-4xl">
+            Paper Puzzle or Real Answer?
+            <span class="text-teal-300">Can the New Utah Jazz Starting Five Survive a Data Check?</span>
+        </h1>
+        <p class="max-w-3xl text-slate-400 text-lg mt-5 leading-relaxed">
+            Michael Pina's <a class="src" href="https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft" target="_blank">article on The Ringer</a>
+            paints a picture of a Jazz lineup that blends height, spacing, and upside:
+            <strong class="text-slate-200">Walker Kessler, Keyonte George, Lauri Markkanen, Jaren Jackson Jr., and Ace Bailey.</strong>
+            This remix keeps the optimism but asks three harder questions, each backed by a different visualization.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-5 text-xs text-slate-300">
+            <span class="bg-slate-800/80 rounded-full px-3 py-1.5">Author: Gengl</span>
+            <span class="bg-slate-800/80 rounded-full px-3 py-1.5">Original Author: Michael Pina / The Ringer</span>
+        </div>
+        <div id="data-status" class="mt-4 text-xs text-slate-500"></div>
+    </header>
+
+    <!-- ===== SECTION 1: SPACE ===== -->
+    <section class="mb-20">
+        <div class="text-xs uppercase tracking-[.18em] text-cyan-400 mb-2">Section 1 / Space</div>
+        <h2 class="text-3xl font-bold mb-4">The first layer of optimism comes from geometry.</h2>
+        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-3 mb-6">
+            <p>The original article's most magnetic idea is spatial: Markkanen stretches defenders to the arc,
+                JJJ operates from the elbow and short corner, George creates off the dribble, Bailey roams the
+                weak side, and Kessler anchors the rim. If you squint at a half-court, it almost looks like a
+                perfectly tiled floor.</p>
+            <p>This chart plots every recorded field-goal attempt for the five projected starters this season.
+                Click any player chip to toggle visibility, or click a dot to inspect a single shot.
+                Section 2's role chart can also drive focusing here.</p>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-[1fr_340px]">
+            <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-5">
+                <div class="flex flex-wrap gap-3 items-center mb-4">
+                    <label class="flex items-center gap-2 text-sm text-slate-300">
+                        Density
+                        <select id="density-select" class="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200 text-sm">
+                            <option value="60">Sparse</option><option value="120" selected>Medium</option>
+                            <option value="200">Dense</option><option value="all">All</option>
+                        </select>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300">
+                        Show
+                        <select id="shot-mode" class="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200 text-sm">
+                            <option value="all" selected>All shots</option><option value="made">Makes only</option>
+                        </select>
+                    </label>
+                    <button id="clear-focus" class="ml-auto rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-slate-400 hover:text-white transition-colors">Reset&nbsp;view</button>
+                </div>
+                <div id="shot-map"></div>
+                <div id="focus-note" class="mt-2 text-xs text-teal-300 min-h-[20px]"></div>
+            </div>
+
+            <div class="space-y-4">
+                <div id="legend-container" class="space-y-2"></div>
+                <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-5">
+                    <h4 class="font-semibold mb-3 text-sm uppercase tracking-wide text-slate-400">Shot Slice</h4>
+                    <div id="shot-details" class="hidden text-sm space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div id="detail-color" class="w-10 h-10 rounded-full border-2 border-slate-700"></div>
+                            <div>
+                                <div id="detail-player" class="font-bold text-lg"></div>
+                                <span id="detail-result" class="inline-block rounded-full px-2 py-0.5 text-xs font-bold mt-1"></span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
+                                <div class="text-[10px] uppercase text-slate-500">Action</div>
+                                <div id="detail-action" class="text-slate-200 mt-1"></div>
+                            </div>
+                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
+                                <div class="text-[10px] uppercase text-slate-500">Zone</div>
+                                <div id="detail-zone" class="text-slate-200 mt-1"></div>
+                            </div>
+                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
+                                <div class="text-[10px] uppercase text-slate-500">Type</div>
+                                <div id="detail-type" class="text-slate-200 mt-1"></div>
+                            </div>
+                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
+                                <div class="text-[10px] uppercase text-slate-500">Distance</div>
+                                <div><span id="detail-distance" class="text-xl font-bold text-white"></span> <span class="text-slate-400">ft</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="empty-state" class="text-center text-slate-600 py-6 text-xs">Click any shot dot to inspect.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2: ROLES ===== -->
+    <section class="mb-20">
+        <div class="text-xs uppercase tracking-[.18em] text-amber-400 mb-2">Section 2 / Roles</div>
+        <h2 class="text-3xl font-bold mb-4">Do the five roles complement or overlap?</h2>
+        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-3 mb-6">
+            <p>Spacing alone doesn't win. A functional starting five needs floor spacing,
+                rim pressure, shot creation, scoring load, rim protection, and shot versatility &mdash;
+                without too much redundancy. Each row below compares the five starters on one dimension.
+                The wider a player's bar, the higher their score on that metric (0&ndash;100, min-max normalized).</p>
+            <p><strong class="text-slate-200">Hover any bar</strong> for details.
+                <strong class="text-slate-200">Click any bar</strong> to focus the shot map above
+                on that player's relevant court zones &mdash; the view-coordination bridge between
+                Sections 1 and 2.</p>
+        </div>
+        <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 overflow-x-auto">
+            <div id="role-chart"></div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3: RISKS ===== -->
+    <section class="mb-20">
+        <div class="text-xs uppercase tracking-[.18em] text-rose-400 mb-2">Section 3 / Risks</div>
+        <h2 class="text-3xl font-bold mb-4">Where does the optimism break?</h2>
+        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-3 mb-6">
+            <p>Every compelling narrative has blind spots.
+                The original article acknowledges that Jackson "permanently resides in foul trouble" but mostly
+                frames the trade as upside. Below are three structural risks the data can surface right now,
+                each rendered as a simple bar comparison so the imbalance is immediately visible.</p>
+        </div>
+        <div id="risk-cards" class="grid gap-6 md:grid-cols-3"></div>
+    </section>
+
+    <footer class="border-t border-slate-800 pt-8 text-xs text-slate-500 space-y-2 pb-12">
+        <p><strong class="text-slate-300">Data Source:</strong>
+            NBA Stats via <code>nba_api</code> Python package (ShotChartDetail &amp; LeagueDashPlayerStats endpoints),
+            2025-26 Regular Season. <span id="meta-timestamp"></span></p>
+        <p><strong class="text-slate-300">Original Story:</strong>
+            <a class="src" href="https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft" target="_blank">
+                "Why I'm Obsessed With the New-Look Utah Jazz"</a> by Michael Pina, The Ringer, Feb 3 2026.</p>
+        <p><strong class="text-slate-300">AI Usage:</strong>
+            Claude (Anthropic) was used for debugging, copy-editing, code scaffolding, and background research.
+            The story angle, data pipeline, visualization designs, and narrative structure are the author's own work.</p>
+        <p><strong class="text-slate-300">Method Notes:</strong>
+            Role chart scores are min-max normalized proxies; rim protection uses blocks/game as an approximation.
+            Sample sizes differ sharply across players (see Section 3).</p>
+    </footer>
+</div>
+
+<div class="d3-tooltip" id="tooltip"></div>
+
+<script src="./jazz_shots_data.js"></script>
+<script src="./jazz_shots_meta.js"></script>
+<script src="./jazz_story_summary.js"></script>
+
+<script>
+(function () {
+    "use strict";
+
+    const PLAYERS = ["Walker Kessler","Keyonte George","Lauri Markkanen","Jaren Jackson Jr.","Ace Bailey"];
+    const SHORT   = { "Walker Kessler":"Kessler", "Keyonte George":"George", "Lauri Markkanen":"Markkanen", "Jaren Jackson Jr.":"JJJ", "Ace Bailey":"Bailey" };
+    const COLOR   = d3.scaleOrdinal().domain(PLAYERS).range(["#4ade80","#c084fc","#facc15","#38bdf8","#fb923c"]);
+    const METRICS = ["Floor spacing","Rim pressure","Shot creation","Scoring load","Rim protection proxy","Shot versatility"];
+
+    let shotData = [], displayData = [], storySummary = {}, meta = {};
+    let activePlayers = new Set(PLAYERS);
+    let maxPerPlayer = 120, shotMode = "all";
+    let focusPlayer = null, focusZones = null;
+    let selectedDot = null;
+
+    const tip = document.getElementById("tooltip");
+    function showTip(ev, html) {
+        tip.innerHTML = html; tip.style.opacity = 1;
+        tip.style.left = (ev.clientX + 14) + "px";
+        tip.style.top  = (ev.clientY - 10) + "px";
+    }
+    function hideTip() { tip.style.opacity = 0; }
+
+    // ═══════════════════════════════════════════════
+    //  VIZ 1 — SHOT MAP
+    // ═══════════════════════════════════════════════
+    const W = 560, H = 520, pad = 16;
+    const xS = d3.scaleLinear().domain([-250,250]).range([pad, W-pad]);
+    const yS = d3.scaleLinear().domain([-50,400]).range([H-pad, pad]);
+
+    const mapSvg = d3.select("#shot-map").append("svg")
+        .attr("viewBox",`0 0 ${W} ${H}`).attr("width","100%");
+    const courtG = mapSvg.append("g");
+    const shotsG = mapSvg.append("g");
+
+    function drawCourt(g) {
+        g.append("rect").attr("class","court-paint")
+            .attr("x",xS(-80)).attr("y",yS(140))
+            .attr("width",xS(80)-xS(-80)).attr("height",yS(-47.5)-yS(140));
+        const ftR = xS(60)-xS(0);
+        g.append("path").attr("class","court-line")
+            .attr("d",d3.arc().innerRadius(ftR).outerRadius(ftR).startAngle(-Math.PI/2).endAngle(Math.PI/2))
+            .attr("transform",`translate(${xS(0)},${yS(140)})`);
+        g.append("path").attr("class","court-line").style("stroke-dasharray","5,5")
+            .attr("d",d3.arc().innerRadius(ftR).outerRadius(ftR).startAngle(Math.PI/2).endAngle(Math.PI*1.5))
+            .attr("transform",`translate(${xS(0)},${yS(140)})`);
+        g.append("line").attr("class","court-line").attr("x1",xS(-220)).attr("y1",yS(-47.5)).attr("x2",xS(-220)).attr("y2",yS(92.5));
+        g.append("line").attr("class","court-line").attr("x1",xS(220)).attr("y1",yS(-47.5)).attr("x2",xS(220)).attr("y2",yS(92.5));
+        g.append("path").attr("class","court-line")
+            .attr("d",`M ${xS(-220)} ${yS(92.5)} A ${xS(237.5)-xS(0)} ${yS(0)-yS(237.5)} 0 0 1 ${xS(220)} ${yS(92.5)}`);
+        g.append("line").attr("class","backboard").attr("x1",xS(-30)).attr("y1",yS(-15)).attr("x2",xS(30)).attr("y2",yS(-15));
+        g.append("circle").attr("class","hoop").attr("cx",xS(0)).attr("cy",yS(0)).attr("r",xS(7.5)-xS(0));
+        const raR = xS(40)-xS(0);
+        g.append("path").attr("class","court-line")
+            .attr("d",d3.arc().innerRadius(raR).outerRadius(raR).startAngle(-Math.PI/2).endAngle(Math.PI/2))
+            .attr("transform",`translate(${xS(0)},${yS(0)})`);
+    }
+
+    function sample(arr, limit) {
+        if (limit === null || arr.length <= limit) return arr;
+        const out = [], step = arr.length / limit;
+        for (let i = 0; i < limit; i++) out.push(arr[Math.floor(i * step)]);
+        return out;
+    }
+
+    function rebuildDisplay() {
+        const grouped = d3.group(shotData, d => d.player);
+        displayData = [];
+        grouped.forEach(shots => displayData.push(...sample(shots, maxPerPlayer)));
+    }
+
+    function getFilteredShots() {
+        let f = displayData.filter(d => activePlayers.has(d.player));
+        if (shotMode === "made") f = f.filter(d => d.made === 1);
+        if (focusPlayer) f = f.filter(d => d.player === focusPlayer);
+        if (focusZones) f = f.filter(d => focusZones.includes(d.zone));
+        return f;
+    }
+
+    function updateShots() {
+        selectedDot = null;
+        const filtered = getFilteredShots();
+
+        const dots = shotsG.selectAll(".shot-dot")
+            .data(filtered, d => `${d.player}|${d.x}|${d.y}|${d.action}|${d.distance}`);
+
+        dots.exit().transition().duration(200).attr("r", 0).remove();
+
+        const enter = dots.enter().append("circle").attr("class","shot-dot")
+            .attr("cx", d => xS(d.x)).attr("cy", d => yS(d.y)).attr("r", 0)
+            .on("click", onDotClick)
+            .on("mouseenter", (ev,d) => {
+                showTip(ev, `<strong style="color:${COLOR(d.player)}">${d.player}</strong><br>${d.action}<br>${d.zone} · ${d.distance} ft · ${d.made?"Made":"Missed"}`);
+            })
+            .on("mousemove", (ev) => { tip.style.left=(ev.clientX+14)+"px"; tip.style.top=(ev.clientY-10)+"px"; })
+            .on("mouseleave", hideTip);
+
+        enter.merge(dots)
+            .attr("cx", d => xS(d.x)).attr("cy", d => yS(d.y))
+            .transition().duration(350)
+            .attr("r", d => d.made ? 4 : 3.5)
+            .attr("fill", d => COLOR(d.player))
+            .attr("fill-opacity", d => d.made ? 0.8 : 0.2)
+            .attr("stroke", d => COLOR(d.player))
+            .attr("stroke-width", d => d.made ? 0 : 1.2)
+            .attr("opacity", 1);
+    }
+
+    function onDotClick(ev, d) {
+        ev.stopPropagation();
+        selectedDot = d;
+        showDetailPanel(d);
+
+        shotsG.selectAll(".shot-dot")
+            .attr("opacity", 0.1)
+            .attr("r", s => s.made ? 4 : 3.5)
+            .attr("stroke", s => COLOR(s.player))
+            .attr("stroke-width", s => s.made ? 0 : 1.2);
+
+        shotsG.selectAll(".shot-dot")
+            .filter(s => s === d)
+            .attr("opacity", 1).attr("r", 9).attr("stroke", "#fff").attr("stroke-width", 3);
+    }
+
+    mapSvg.on("click", () => {
+        if (selectedDot) { selectedDot = null; updateShots(); }
+    });
+
+    function showDetailPanel(d) {
+        document.getElementById("empty-state").classList.add("hidden");
+        document.getElementById("shot-details").classList.remove("hidden");
+        document.getElementById("detail-color").style.backgroundColor = COLOR(d.player);
+        document.getElementById("detail-player").textContent = d.player;
+        document.getElementById("detail-action").textContent = d.action;
+        document.getElementById("detail-zone").textContent = d.zone || "";
+        document.getElementById("detail-type").textContent = d.type;
+        document.getElementById("detail-distance").textContent = d.distance;
+        const b = document.getElementById("detail-result");
+        b.textContent = d.made ? "Made" : "Missed";
+        b.className = `inline-block rounded-full px-2 py-0.5 text-xs font-bold mt-1 ${d.made ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`;
+    }
+
+    // ═══════════════════════════════════════════════
+    //  LEGEND (player chips)
+    // ═══════════════════════════════════════════════
+    function buildLegend() {
+        const container = d3.select("#legend-container").html("");
+        PLAYERS.forEach(player => {
+            const shots = shotData.filter(d => d.player === player);
+            const fga = shots.length, fgm = shots.filter(d => d.made===1).length;
+            const tpm = shots.filter(d => d.made===1 && d.type==="3PT Field Goal").length;
+            const fgPct = fga ? ((fgm/fga)*100).toFixed(1) : "0.0";
+            const efg   = fga ? (((fgm+0.5*tpm)/fga)*100).toFixed(1) : "0.0";
+
+            const chip = container.append("div")
+                .attr("class","chip rounded-xl bg-slate-900/70 border border-slate-800 p-3")
+                .attr("data-player", player)
+                .on("click", () => {
+                    if (activePlayers.has(player)) {
+                        if (activePlayers.size > 1) { activePlayers.delete(player); chip.classed("inactive",true); }
+                    } else { activePlayers.add(player); chip.classed("inactive",false); }
+                    updateShots();
+                });
+
+            const row = chip.append("div").attr("class","flex items-center gap-2 mb-2");
+            row.append("div").style("width","12px").style("height","12px").style("border-radius","50%").style("background",COLOR(player));
+            row.append("span").attr("class","font-semibold text-sm text-slate-100").text(player);
+
+            const g = chip.append("div").attr("class","grid grid-cols-3 gap-1 text-center text-[10px]");
+            [["FGA",fga],["FG%",fgPct+"%"],["eFG%",efg+"%"]].forEach(([l,v])=>{
+                const b=g.append("div").attr("class","rounded bg-slate-950 py-1");
+                b.append("div").attr("class","text-slate-500 uppercase font-bold").text(l);
+                b.append("div").attr("class","text-slate-300").text(v);
+            });
+        });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  FOCUS (view coordination)
+    // ═══════════════════════════════════════════════
+    function applyFocus(player, zones, label) {
+        focusPlayer = player; focusZones = zones;
+        document.getElementById("focus-note").textContent = "Focused: " + label;
+        d3.selectAll(".chip").classed("focused", false);
+        d3.selectAll(`.chip[data-player="${player}"]`).classed("focused", true);
+        updateShots();
+    }
+
+    function clearFocus() {
+        focusPlayer = null; focusZones = null;
+        document.getElementById("focus-note").textContent = "";
+        d3.selectAll(".chip").classed("focused", false);
+        updateShots();
+    }
+
+    document.getElementById("clear-focus").addEventListener("click", clearFocus);
+
+    // ═══════════════════════════════════════════════
+    //  VIZ 2 — ROLE COMPARISON (grouped horizontal bars)
+    // ═══════════════════════════════════════════════
+    function buildRoleChart() {
+        const metrics = storySummary.role_metrics || [];
+        if (!metrics.length) return;
+
+        const mLeft = 145, mRight = 30, mTop = 50, mBot = 20;
+        const rowH = 48, barH = 7, barGap = 1;
+        const groupH = PLAYERS.length * (barH + barGap);
+        const totalH = mTop + METRICS.length * rowH + mBot;
+        const chartW = 780;
+        const barAreaW = chartW - mLeft - mRight;
+
+        const xScale = d3.scaleLinear().domain([0, 100]).range([0, barAreaW]);
+
+        const rSvg = d3.select("#role-chart").append("svg")
+            .attr("viewBox", `0 0 ${chartW} ${totalH}`).attr("width","100%")
+            .style("overflow","visible");
+
+        // legend at top
+        const leg = rSvg.append("g").attr("transform",`translate(${mLeft},12)`);
+        PLAYERS.forEach((p,i) => {
+            const lx = i * 140;
+            leg.append("rect").attr("x",lx).attr("y",0).attr("width",12).attr("height",12).attr("rx",2).attr("fill",COLOR(p));
+            leg.append("text").attr("x",lx+16).attr("y",10).attr("fill","#cbd5e1").attr("font-size",11).text(SHORT[p]);
+        });
+
+        // axis
+        rSvg.append("g").attr("transform",`translate(${mLeft},${mTop - 4})`)
+            .call(d3.axisTop(xScale).ticks(5).tickSize(0).tickFormat(d => d))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.selectAll("text").attr("fill","#64748b").attr("font-size",10));
+
+        // grid lines
+        xScale.ticks(5).forEach(t => {
+            rSvg.append("line")
+                .attr("x1", mLeft + xScale(t)).attr("x2", mLeft + xScale(t))
+                .attr("y1", mTop).attr("y2", mTop + METRICS.length * rowH)
+                .attr("stroke","rgba(148,163,184,.12)").attr("stroke-dasharray","3,4");
+        });
+
+        METRICS.forEach((metric, mi) => {
+            const gy = mTop + mi * rowH;
+            const groupY = gy + (rowH - groupH) / 2;
+
+            rSvg.append("text")
+                .attr("x", mLeft - 10).attr("y", gy + rowH / 2 + 4)
+                .attr("text-anchor","end").attr("fill","#94a3b8").attr("font-size",12).attr("font-weight",600)
+                .text(metric);
+
+            if (mi < METRICS.length - 1) {
+                rSvg.append("line")
+                    .attr("x1", mLeft).attr("x2", chartW - mRight)
+                    .attr("y1", gy + rowH).attr("y2", gy + rowH)
+                    .attr("stroke","rgba(148,163,184,.08)");
+            }
+
+            PLAYERS.forEach((player, pi) => {
+                const item = metrics.find(m => m.player === player && m.metric === metric);
+                if (!item) return;
+
+                const by = groupY + pi * (barH + barGap);
+
+                rSvg.append("rect").attr("class","role-bar")
+                    .attr("x", mLeft).attr("y", by)
+                    .attr("width", 0).attr("height", barH)
+                    .attr("fill", COLOR(player)).attr("opacity", 0.8)
+                    .on("mouseenter", function(ev) {
+                        d3.select(this).attr("opacity",1);
+                        showTip(ev,
+                            `<strong style="color:${COLOR(player)}">${player}</strong><br>` +
+                            `<strong>${metric}</strong>: ${item.score.toFixed(0)} / 100<br>` +
+                            `<span style="color:#94a3b8">${item.description}</span>`
+                        );
+                    })
+                    .on("mousemove", ev => { tip.style.left=(ev.clientX+14)+"px"; tip.style.top=(ev.clientY-10)+"px"; })
+                    .on("mouseleave", function() { d3.select(this).attr("opacity",0.8); hideTip(); })
+                    .on("click", () => applyFocus(player, item.focus_zones, `${SHORT[player]} — ${metric}`))
+                    .transition().duration(500).delay(mi*60 + pi*30)
+                    .attr("width", xScale(item.score));
+
+                if (item.score > 8) {
+                    rSvg.append("text")
+                        .attr("x", mLeft + xScale(item.score) - 4)
+                        .attr("y", by + barH - 1)
+                        .attr("text-anchor","end")
+                        .attr("fill", item.score > 50 ? "rgba(15,23,42,.7)" : "rgba(226,232,240,.6)")
+                        .attr("font-size", 8).attr("font-weight", 700)
+                        .style("pointer-events","none")
+                        .text(item.score.toFixed(0))
+                        .attr("opacity",0).transition().delay(mi*60+pi*30+400).attr("opacity",1);
+                }
+            });
+        });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  VIZ 3 — RISK CARDS (horizontal bars)
+    // ═══════════════════════════════════════════════
+    function buildRiskCards() {
+        const cards = storySummary.risk_cards || [];
+        const container = d3.select("#risk-cards");
+
+        cards.forEach(card => {
+            const div = container.append("div")
+                .attr("class","bg-slate-900/60 rounded-2xl border border-slate-800 p-5");
+            div.append("div").attr("class","text-xs uppercase tracking-wide text-rose-400 mb-1").text(card.subtitle);
+            div.append("h3").attr("class","text-lg font-bold mb-4 leading-snug text-slate-100").text(card.title);
+
+            const sorted = [...card.items].sort((a,b) => b.value - a.value);
+            const barW = 280, rowH = 34;
+            const barH = sorted.length * rowH + 8;
+            const maxVal = d3.max(sorted, d => d.value);
+            const bx = d3.scaleLinear().domain([0, maxVal * 1.15]).range([0, barW - 120]);
+
+            const bSvg = div.append("svg").attr("viewBox",`0 0 ${barW} ${barH}`).attr("width","100%");
+
+            sorted.forEach((item, i) => {
+                const y = i * rowH + 4;
+                bSvg.append("text")
+                    .attr("x",58).attr("y",y+20)
+                    .attr("text-anchor","end").attr("fill","#94a3b8").attr("font-size",11)
+                    .text(SHORT[item.player]);
+
+                bSvg.append("rect").attr("class","risk-bar")
+                    .attr("x",65).attr("y",y+6).attr("width",0).attr("height",18)
+                    .attr("fill",COLOR(item.player)).attr("opacity",.75)
+                    .on("mouseenter", function(ev) {
+                        d3.select(this).attr("opacity",1);
+                        applyFocus(item.player, null, `${SHORT[item.player]} — ${card.metric_label}`);
+                    })
+                    .on("mouseleave", function() { d3.select(this).attr("opacity",.75); })
+                    .transition().duration(500).delay(i*70)
+                    .attr("width", bx(item.value));
+
+                bSvg.append("text")
+                    .attr("x", 65 + bx(item.value) + 6).attr("y", y+20)
+                    .attr("fill","#e2e8f0").attr("font-size",12).attr("font-weight",700)
+                    .text(item.value)
+                    .attr("opacity",0).transition().delay(i*70+450).attr("opacity",1);
+            });
+
+            div.append("p").attr("class","text-xs text-slate-500 mt-4 leading-relaxed").text(card.narrative);
+        });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  CONTROLS
+    // ═══════════════════════════════════════════════
+    document.getElementById("density-select").addEventListener("change", ev => {
+        maxPerPlayer = ev.target.value === "all" ? null : Number(ev.target.value);
+        rebuildDisplay(); updateShots();
+    });
+    document.getElementById("shot-mode").addEventListener("change", ev => {
+        shotMode = ev.target.value; updateShots();
+    });
+
+    // ═══════════════════════════════════════════════
+    //  BOOT
+    // ═══════════════════════════════════════════════
+    function boot() {
+        shotData     = Array.isArray(window.JAZZ_SHOT_DATA) ? window.JAZZ_SHOT_DATA : [];
+        meta         = window.JAZZ_SHOT_META || {};
+        storySummary = window.JAZZ_STORY_SUMMARY || {};
+
+        if (!shotData.length) {
+            document.getElementById("data-status").textContent = "Data not loaded. Run hw02_getScoreData.py first.";
+            return;
+        }
+        const ts = meta.generated_at_utc ? new Date(meta.generated_at_utc).toLocaleString() : "unknown";
+        document.getElementById("data-status").textContent = `Data: ${meta.season||"?"} season · ${shotData.length} shots · fetched ${ts}`;
+        document.getElementById("meta-timestamp").textContent = `Data fetched at ${ts}.`;
+
+        rebuildDisplay();
+        drawCourt(courtG);
+        buildLegend();
+        updateShots();
+        buildRoleChart();
+        buildRiskCards();
+    }
+
+    boot();
+})();
+</script>
+</body>
+</html>
