@@ -564,10 +564,11 @@
                     .on("mouseenter", function(ev) {
                         d3.select(this).attr("opacity",1);
                         applyFocus(item.player, null, `${SHORT[item.player]} — ${card.metric_label}`);
-                        // Scroll smoothly back to the top section
-                        document.querySelector('#shot-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
                     })
                     .on("mouseleave", function() { d3.select(this).attr("opacity",.75); })
+                    .on("click", function() {
+                        document.querySelector('#shot-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    })
                     .transition().duration(500).delay(i*70)
                     .attr("width", bx(item.value));
 
