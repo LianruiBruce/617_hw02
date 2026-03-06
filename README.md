@@ -73,7 +73,7 @@ The data is collected via `hw02_getScoreData.py`, which:
 
 ## AI Usage
 
-- **Model**: Claude (Anthropic), accessed via Cursor IDE
+- **Model**: Claude (Anthropic)
 - **How it was used**:
   - Debugging Python data pipeline issues (nba_api parameter names, column availability)
   - Code scaffolding for D3 court drawing and data binding patterns
@@ -97,4 +97,4 @@ python hw02_getScoreData.py
 
 ## Author
 
-**Gengl** — COMP 617, Spring 2026
+**Lianrui Geng** — COMP 617, Spring 2026

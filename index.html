@@ -8,34 +8,41 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background:#080f1e; color:#e2e8f0; font-family:'Inter',system-ui,sans-serif; margin:0; }
+        body { background:#0a0f18; color:#cbd5e1; font-family:'Inter',system-ui,sans-serif; margin:0; }
 
-        .court-line { fill:none; stroke:rgba(148,163,184,.45); stroke-width:2px; }
-        .court-paint { fill:rgba(30,41,59,.5); stroke:rgba(148,163,184,.45); stroke-width:2px; }
-        .hoop { fill:none; stroke:#fb7185; stroke-width:3px; }
-        .backboard { fill:none; stroke:rgba(226,232,240,.8); stroke-width:4px; }
+        .court-line { fill:none; stroke:rgba(148,163,184,.3); stroke-width:1.5px; }
+        .court-paint { fill:rgba(15,23,42,.6); stroke:rgba(148,163,184,.3); stroke-width:1.5px; }
+        .hoop { fill:none; stroke:#f43f5e; stroke-width:2.5px; }
+        .backboard { fill:none; stroke:rgba(226,232,240,.6); stroke-width:3px; }
 
         .shot-dot { cursor:pointer; }
 
-        .chip { cursor:pointer; transition:opacity .15s,transform .12s,border-color .15s; border:2px solid transparent; }
-        .chip:hover { transform:translateY(-2px); }
-        .chip.inactive { opacity:.35; filter:grayscale(100%); }
-        .chip.focused { border-color:#2dd4bf; box-shadow:0 0 12px rgba(45,212,191,.25); }
+        .chip { cursor:pointer; transition:opacity .15s,transform .12s,border-color .15s, box-shadow .15s; border:1px solid rgba(255,255,255,0.05); background:rgba(30,41,59,0.5); backdrop-filter: blur(8px); }
+        .chip:hover { transform:translateY(-2px); border-color: rgba(255,255,255,0.1); background:rgba(30,41,59,0.8); }
+        .chip.inactive { opacity:.3; filter:grayscale(100%); }
+        .chip.focused { border-color:#38bdf8; box-shadow:0 0 0 1px rgba(56,189,248,.3), 0 0 15px rgba(56,189,248,.1); background:rgba(15,23,42,0.8); }
 
         .role-bar { cursor:pointer; transition:opacity .12s; rx:3; }
-        .role-bar:hover { opacity:1!important; filter:brightness(1.2); }
+        .role-bar:hover { opacity:1!important; filter:brightness(1.3); }
 
         .risk-bar { cursor:pointer; transition:opacity .15s; rx:4; }
-        .risk-bar:hover { opacity:1!important; }
+        .risk-bar:hover { opacity:1!important; filter:brightness(1.2); }
 
-        a.src { color:#7dd3fc; } a.src:hover { color:#bae6fd; }
+        a.src { color:#38bdf8; text-decoration: underline; text-decoration-color: rgba(56,189,248,0.3); text-underline-offset: 3px; } a.src:hover { color:#7dd3fc; text-decoration-color: #38bdf8; }
 
         .d3-tooltip {
             pointer-events:none; position:fixed; z-index:100;
-            background:rgba(10,18,32,.94); border:1px solid #334155;
-            border-radius:8px; padding:8px 14px; font-size:12px; color:#e2e8f0;
-            max-width:320px; line-height:1.5; box-shadow:0 8px 24px rgba(0,0,0,.45);
-            opacity:0; transition:opacity .12s;
+            background:rgba(15,23,42,.95); border:1px solid rgba(255,255,255,0.1);
+            border-radius:8px; padding:10px 14px; font-size:13px; color:#f1f5f9;
+            max-width:320px; line-height:1.5; box-shadow:0 10px 25px -5px rgba(0,0,0,.5), 0 8px 10px -6px rgba(0,0,0,.5);
+            opacity:0; transition:opacity .12s; backdrop-filter: blur(8px);
+        }
+        
+        .img-container {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3), 0 8px 10px -6px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -43,41 +50,41 @@
 <div class="max-w-6xl mx-auto px-5 py-10 md:py-16">
 
     <header class="mb-14">
-        <div class="text-xs uppercase tracking-[.22em] text-teal-400 mb-3">Data Story Remix &middot; 2025-26 Season</div>
-        <h1 class="text-4xl md:text-5xl font-black leading-tight max-w-4xl">
+        <div class="text-xs font-bold uppercase tracking-[.22em] text-sky-400 mb-3">Data Story Remix &middot; 2025-26 Season</div>
+        <h1 class="text-4xl md:text-5xl font-black text-f1f5f9 leading-tight max-w-4xl tracking-tight text-white">
             A New Geometry in Salt Lake:
-            <span class="text-teal-300">Deconstructing the Utah Jazz Starting Five</span>
+            <span class="text-sky-400">Deconstructing the Utah Jazz Starting Five</span>
         </h1>
-        <p class="max-w-3xl text-slate-400 text-lg mt-5 leading-relaxed">
-            Michael Pina's <a class="src" href="https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft" target="_blank">article on The Ringer</a>
+        <p class="max-w-3xl text-slate-300 text-lg mt-5 leading-relaxed font-light">
+            Michael Pina's <a class="src font-medium" href="https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft" target="_blank">article on The Ringer</a>
             paints a picture of a Jazz lineup that blends height, spacing, and upside:
-            <strong class="text-slate-200">Walker Kessler, Keyonte George, Lauri Markkanen, Jaren Jackson Jr., and Ace Bailey.</strong>
+            <strong class="text-white font-semibold">Walker Kessler, Keyonte George, Lauri Markkanen, Jaren Jackson Jr., and Ace Bailey.</strong>
             This remix keeps the optimism but asks three harder questions, each backed by a different visualization.
         </p>
-        <div class="mt-8 mb-6 relative">
-            <img src="./assets/jazz_arena.png" alt="Utah Jazz Arena Concept" class="w-full h-72 object-cover rounded-2xl border border-slate-800 shadow-2xl opacity-90">
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-[#080f1e] via-transparent to-transparent"></div>
+        <div class="mt-10 mb-8 img-container relative">
+            <img src="./assets/jazz_arena.png" alt="Utah Jazz Arena Concept" class="w-full h-[320px] object-cover opacity-90">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0f18] via-transparent to-transparent"></div>
         </div>
-        <div class="flex flex-wrap gap-3 mt-5 text-xs text-slate-300">
-            <span class="bg-slate-800/80 rounded-full px-3 py-1.5">Author: Lianrui Geng</span>
-            <span class="bg-slate-800/80 rounded-full px-3 py-1.5">Original Author: Michael Pina / The Ringer</span>
+        <div class="flex flex-wrap gap-3 mt-5 text-xs text-slate-300 font-medium">
+            <span class="bg-slate-800/60 border border-slate-700/50 backdrop-blur-md rounded-full px-4 py-1.5">Author: Lianrui Geng</span>
+            <span class="bg-slate-800/60 border border-slate-700/50 backdrop-blur-md rounded-full px-4 py-1.5">Original Author: Michael Pina / The Ringer</span>
         </div>
-        <div id="data-status" class="mt-4 text-xs text-slate-500"></div>
+        <div id="data-status" class="mt-5 text-xs font-medium text-slate-500"></div>
     </header>
 
     <!-- ===== SECTION 1: SPACE ===== -->
-    <section class="mb-20">
-        <div class="text-xs uppercase tracking-[.18em] text-cyan-400 mb-2">Section 1 / Space</div>
-        <h2 class="text-3xl font-bold mb-4">The first layer of optimism comes from geometry.</h2>
-        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
+    <section class="mb-24">
+        <div class="text-xs font-bold uppercase tracking-[.18em] text-cyan-400 mb-3">Section 1 / Space</div>
+        <h2 class="text-3xl font-black text-white tracking-tight mb-5">The first layer of optimism comes from geometry.</h2>
+        <div class="max-w-3xl text-slate-300 leading-relaxed space-y-5 mb-8 font-light">
             <p>The original article's central premise hinges on spatial distribution: Markkanen operates beyond the arc,
                 JJJ attacks from the elbow and short corner, George creates off the dribble on the perimeter, Bailey utilizes the
                 weak side, and Kessler anchors the low block. Theoretically, this limits offensive redundancy and maximizes half-court real estate.</p>
             <p>Drilling deeper into the geometry, this configuration theoretically solves modern NBA spacing issues. 
-                <strong>Lauri Markkanen's</strong> elite perimeter gravity is the linchpin—he forces opposing power forwards out of the paint, 
-                creating massive, uncluttered driving lanes for <strong>Keyonte George</strong> and <strong>Ace Bailey</strong>. 
-                Meanwhile, <strong>Jaren Jackson Jr.'s</strong> ability to spot up from the corner or elbow prevents the dreaded "twin-tower" spacing collapse. 
-                Because JJJ can pull his defender away from the basket, <strong>Walker Kessler</strong> is left free to operate exclusively 
+                <strong class="text-white font-medium">Lauri Markkanen's</strong> elite perimeter gravity is the linchpin—he forces opposing power forwards out of the paint, 
+                creating massive, uncluttered driving lanes for <strong class="text-white font-medium">Keyonte George</strong> and <strong class="text-white font-medium">Ace Bailey</strong>. 
+                Meanwhile, <strong class="text-white font-medium">Jaren Jackson Jr.'s</strong> ability to spot up from the corner or elbow prevents the dreaded "twin-tower" spacing collapse. 
+                Because JJJ can pull his defender away from the basket, <strong class="text-white font-medium">Walker Kessler</strong> is left free to operate exclusively 
                 as an interior lob threat and offensive rebounder without clogging the lane for drivers.</p>
             <p>This chart plots every recorded field-goal attempt for the five projected starters this season.
                 Click any player chip to toggle visibility, or click a dot to inspect a single shot.
@@ -85,111 +92,112 @@
         </div>
 
         <div class="grid gap-6 lg:grid-cols-[1fr_340px]">
-            <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-5">
-                <div class="flex flex-wrap gap-3 items-center mb-4">
-                    <label class="flex items-center gap-2 text-sm text-slate-300">
+            <div class="bg-slate-900/40 rounded-2xl border border-slate-800 backdrop-blur-sm p-6 shadow-2xl">
+                <div class="flex flex-wrap gap-4 items-center mb-6">
+                    <label class="flex items-center gap-2 text-sm font-medium text-slate-300">
                         Density
-                        <select id="density-select" class="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200 text-sm">
+                        <select id="density-select" class="rounded-md border border-slate-700 bg-slate-800/80 px-2 py-1 text-slate-200 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none backdrop-blur-md">
                             <option value="60">Sparse</option><option value="120" selected>Medium</option>
                             <option value="200">Dense</option><option value="all">All</option>
                         </select>
                     </label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300">
+                    <label class="flex items-center gap-2 text-sm font-medium text-slate-300">
                         Show
-                        <select id="shot-mode" class="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200 text-sm">
+                        <select id="shot-mode" class="rounded-md border border-slate-700 bg-slate-800/80 px-2 py-1 text-slate-200 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none backdrop-blur-md">
                             <option value="all" selected>All shots</option><option value="made">Makes only</option><option value="missed">Misses only</option>
                         </select>
                     </label>
-                    <button id="clear-focus" class="ml-auto rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-slate-400 hover:text-white transition-colors">Reset&nbsp;view</button>
+                    <button id="clear-focus" class="ml-auto rounded-full border border-slate-700 bg-slate-800/50 px-4 py-1.5 text-xs font-semibold text-slate-300 shadow-sm hover:bg-slate-700 hover:text-white transition-all backdrop-blur-md">Reset view</button>
                 </div>
                 <div id="shot-map"></div>
-                <div id="focus-note" class="mt-2 text-xs text-teal-300 min-h-[20px]"></div>
+                <div id="focus-note" class="mt-4 text-xs font-semibold text-cyan-400 min-h-[20px] tracking-wide"></div>
             </div>
 
             <div class="space-y-4">
-                <div id="legend-container" class="space-y-2"></div>
-                <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-5">
-                    <h4 class="font-semibold mb-3 text-sm uppercase tracking-wide text-slate-400">Shot Slice</h4>
-                    <div id="shot-details" class="hidden text-sm space-y-3">
-                        <div class="flex items-center gap-3">
-                            <div id="detail-color" class="w-10 h-10 rounded-full border-2 border-slate-700"></div>
+                <div id="legend-container" class="space-y-3"></div>
+                <div class="bg-slate-900/40 rounded-2xl border border-slate-800 backdrop-blur-sm p-5 shadow-xl">
+                    <h4 class="font-bold mb-4 text-xs uppercase tracking-widest text-slate-400">Shot Slice</h4>
+                    <div id="shot-details" class="hidden text-sm space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div id="detail-color" class="w-12 h-12 rounded-full shadow-inner border-2 border-slate-700"></div>
                             <div>
-                                <div id="detail-player" class="font-bold text-lg"></div>
-                                <span id="detail-result" class="inline-block rounded-full px-2 py-0.5 text-xs font-bold mt-1"></span>
+                                <div id="detail-player" class="font-black text-white text-xl tracking-tight"></div>
+                                <span id="detail-result" class="inline-block rounded-full px-2.5 py-0.5 text-xs font-bold mt-1.5 tracking-wide"></span>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
-                                <div class="text-[10px] uppercase text-slate-500">Action</div>
-                                <div id="detail-action" class="text-slate-200 mt-1"></div>
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="rounded-xl bg-slate-800/60 border border-slate-700/50 p-3.5 backdrop-blur-sm">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Action</div>
+                                <div id="detail-action" class="font-semibold text-slate-200 mt-1.5 leading-tight"></div>
                             </div>
-                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
-                                <div class="text-[10px] uppercase text-slate-500">Zone</div>
-                                <div id="detail-zone" class="text-slate-200 mt-1"></div>
+                            <div class="rounded-xl bg-slate-800/60 border border-slate-700/50 p-3.5 backdrop-blur-sm">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Zone</div>
+                                <div id="detail-zone" class="font-semibold text-slate-200 mt-1.5 leading-tight"></div>
                             </div>
-                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
-                                <div class="text-[10px] uppercase text-slate-500">Type</div>
-                                <div id="detail-type" class="text-slate-200 mt-1"></div>
+                            <div class="rounded-xl bg-slate-800/60 border border-slate-700/50 p-3.5 backdrop-blur-sm">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Type</div>
+                                <div id="detail-type" class="font-semibold text-slate-200 mt-1.5 leading-tight"></div>
                             </div>
-                            <div class="rounded-lg bg-slate-950 border border-slate-800 p-3">
-                                <div class="text-[10px] uppercase text-slate-500">Distance</div>
-                                <div><span id="detail-distance" class="text-xl font-bold text-white"></span> <span class="text-slate-400">ft</span></div>
+                            <div class="rounded-xl bg-slate-800/60 border border-slate-700/50 p-3.5 backdrop-blur-sm">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Distance</div>
+                                <div class="mt-1"><span id="detail-distance" class="text-2xl font-black text-white"></span> <span class="text-slate-400 font-medium ml-0.5">ft</span></div>
                             </div>
                         </div>
                     </div>
-                    <div id="empty-state" class="text-center text-slate-600 py-6 text-xs">Click any shot dot to inspect.</div>
+                    <div id="empty-state" class="text-center text-slate-500 py-8 text-sm font-medium tracking-wide">Click any shot dot to inspect.</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ===== SECTION 2: ROLES ===== -->
-    <section class="mb-20">
-        <div class="text-xs uppercase tracking-[.18em] text-amber-400 mb-2">Section 2 / Roles</div>
-        <h2 class="text-3xl font-bold mb-4">Do the five roles complement or overlap?</h2>
-        <div class="mb-8 relative">
-            <img src="./assets/salt_lake_court.png" alt="Salt Lake City Court" class="w-full h-64 md:h-80 object-cover rounded-2xl border border-slate-800 shadow-xl opacity-85">
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#080f1e]/80 via-transparent to-[#080f1e]/80"></div>
+    <section class="mb-24">
+        <div class="text-xs font-bold uppercase tracking-[.18em] text-cyan-400 mb-3">Section 2 / Roles</div>
+        <h2 class="text-3xl font-black text-white tracking-tight mb-5">Do the five roles complement or overlap?</h2>
+        <div class="mb-10 img-container relative">
+            <img src="./assets/salt_lake_court.png" alt="Salt Lake City Court" class="w-full h-[360px] object-cover opacity-90">
+            <div class="absolute inset-0 bg-gradient-to-r from-[#0a0f18] via-[#0a0f18]/20 to-[#0a0f18]"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0f18] via-transparent to-transparent"></div>
         </div>
-        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
+        <div class="max-w-3xl text-slate-300 leading-relaxed space-y-5 mb-8 font-light">
             <p>Spacing alone doesn't win. A functional starting five needs floor spacing,
                 rim pressure, shot creation, scoring load, rim protection, and shot versatility &mdash;
                 without too much redundancy. The newly constructed Jazz roster presents a fascinating division of labor.</p>
-            <ul class="list-disc pl-5 space-y-2 text-slate-300">
-                <li><strong class="text-amber-300">The Engines:</strong> <span class="text-slate-400">Keyonte George and Lauri Markkanen shoulder the massive offensive burden. George acts as the primary shot creator and perimeter initiator, while Markkanen operates as the ultimate versatile scoring weapon across all three levels.</span></li>
-                <li><strong class="text-amber-300">The Twin Towers:</strong> <span class="text-slate-400">Walker Kessler and Jaren Jackson Jr. form a terrifying defensive frontcourt that fundamentally solves Utah's heavily criticized, historically porous defense. Kessler anchors the paint with traditional drop coverage, while JJJ provides elite weak-side rim protection and perimeter switchability. Crucially, JJJ's outside shooting prevents offensive redundancy, keeping the paint clear for Kessler.</span></li>
-                <li><strong class="text-amber-300">The Wildcard Wing:</strong> <span class="text-slate-400">Ace Bailey fills the vital wing connector role, offering secondary rim pressure, athletic finishing, and defensive flexibility to bridge the gap between the guards and the bigs.</span></li>
+            <ul class="list-disc pl-5 space-y-3 text-slate-300">
+                <li><strong class="text-white font-medium">The Engines:</strong> <span class="text-slate-400">Keyonte George and Lauri Markkanen shoulder the massive offensive burden. George acts as the primary shot creator and perimeter initiator, while Markkanen operates as the ultimate versatile scoring weapon across all three levels.</span></li>
+                <li><strong class="text-white font-medium">The Twin Towers:</strong> <span class="text-slate-400">Walker Kessler and Jaren Jackson Jr. form a terrifying defensive frontcourt that fundamentally solves Utah's heavily criticized, historically porous defense. Kessler anchors the paint with traditional drop coverage, while JJJ provides elite weak-side rim protection and perimeter switchability. Crucially, JJJ's outside shooting prevents offensive redundancy, keeping the paint clear for Kessler.</span></li>
+                <li><strong class="text-white font-medium">The Wildcard Wing:</strong> <span class="text-slate-400">Ace Bailey fills the vital wing connector role, offering secondary rim pressure, athletic finishing, and defensive flexibility to bridge the gap between the guards and the bigs.</span></li>
             </ul>
             <p>Each row below compares the five starters on these dimensions.
                 The wider a player's bar, the higher their relative score on that metric (0&ndash;100, min-max normalized across the five players).
-                <em class="text-slate-500 block mt-2 text-sm">Note: Because scores are relative, the lowest performer in each category receives a score of 0. Also, Walker Kessler and Jaren Jackson Jr. have significantly smaller sample sizes in this dataset, which naturally skews volume-based metrics downward for them.</em>
+                <em class="text-slate-400 block mt-3 text-sm bg-slate-800/40 p-3.5 rounded-lg border border-slate-700/50 backdrop-blur-sm">Note: Because scores are relative, the lowest performer in each category receives a score of 0. Also, Walker Kessler and Jaren Jackson Jr. have significantly smaller sample sizes in this dataset, which naturally skews volume-based metrics downward for them.</em>
             </p>
-            <p><strong class="text-slate-200">Hover any bar</strong> for details.
-                <strong class="text-slate-200">Click any bar</strong> to focus the shot map above
+            <p><strong class="text-white font-medium">Hover any bar</strong> for details.
+                <strong class="text-white font-medium">Click any bar</strong> to focus the shot map above
                 on that player's relevant court zones &mdash; the view-coordination bridge between
                 Sections 1 and 2.</p>
         </div>
-        <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 overflow-x-auto">
+        <div class="bg-slate-900/40 rounded-2xl border border-slate-800 backdrop-blur-sm p-6 overflow-x-auto shadow-xl">
             <div id="role-chart"></div>
         </div>
     </section>
 
     <!-- ===== SECTION 3: RISKS ===== -->
-    <section class="mb-20">
-        <div class="text-xs uppercase tracking-[.18em] text-rose-400 mb-2">Section 3 / Risks</div>
-        <h2 class="text-3xl font-bold mb-4">Where does the optimism break?</h2>
-        <div class="mb-8 relative">
-            <img src="./assets/jazz_concept.png" alt="Jazz Concept" class="w-full h-56 md:h-72 object-cover rounded-2xl border border-slate-800 shadow-xl opacity-85">
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-[#080f1e] via-transparent to-[#080f1e]/30"></div>
+    <section class="mb-24">
+        <div class="text-xs font-bold uppercase tracking-[.18em] text-cyan-400 mb-3">Section 3 / Risks</div>
+        <h2 class="text-3xl font-black text-white tracking-tight mb-5">Where does the optimism break?</h2>
+        <div class="mb-10 img-container relative">
+            <img src="./assets/jazz_concept.png" alt="Jazz Concept" class="w-full h-[300px] object-cover opacity-90">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0f18] via-transparent to-[#0a0f18]/40"></div>
         </div>
-        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
+        <div class="max-w-3xl text-slate-300 leading-relaxed space-y-5 mb-8 font-light">
             <p>Every compelling narrative has blind spots.
                 While the original article acknowledges that Jackson "permanently resides in foul trouble," it mostly
                 frames the roster construction as pure upside. However, the data points to three clear structural risks that could derail this paper puzzle:</p>
-            <ul class="list-disc pl-5 space-y-2 text-slate-300">
-                <li><strong class="text-rose-300">Sample Size & Chemistry:</strong> <span class="text-slate-400">The frontcourt pairing of Jackson Jr. and Kessler, while devastating on paper, has an extremely limited shared data sample (Kessler and JJJ combine for very few games in the current dataset compared to the guards). Building cohesive defensive rotations and offensive flow takes time.</span></li>
-                <li><strong class="text-rose-300">Playmaking Bottleneck:</strong> <span class="text-slate-400">The offense leans overwhelmingly on Keyonte George for shot creation and initiation. If opposing defenses trap him or if he goes cold, the half-court offense risks stagnating into isolation plays.</span></li>
-                <li><strong class="text-rose-300">Spacing Fragility:</strong> <span class="text-slate-400">Despite the narrative of a stretched floor, the actual volume of high-efficiency three-point shooting is heavily concentrated in Markkanen and George. With Kessler a non-shooter and Bailey developing, an injury to either of the two lead guards could compromise the court's pristine geometry.</span></li>
+            <ul class="list-disc pl-5 space-y-3 text-slate-300">
+                <li><strong class="text-white font-medium">Sample Size & Chemistry:</strong> <span class="text-slate-400">The frontcourt pairing of Jackson Jr. and Kessler, while devastating on paper, has an extremely limited shared data sample (Kessler and JJJ combine for very few games in the current dataset compared to the guards). Building cohesive defensive rotations and offensive flow takes time.</span></li>
+                <li><strong class="text-white font-medium">Playmaking Bottleneck:</strong> <span class="text-slate-400">The offense leans overwhelmingly on Keyonte George for shot creation and initiation. If opposing defenses trap him or if he goes cold, the half-court offense risks stagnating into isolation plays.</span></li>
+                <li><strong class="text-white font-medium">Spacing Fragility:</strong> <span class="text-slate-400">Despite the narrative of a stretched floor, the actual volume of high-efficiency three-point shooting is heavily concentrated in Markkanen and George. With Kessler a non-shooter and Bailey developing, an injury to either of the two lead guards could compromise the court's pristine geometry.</span></li>
             </ul>
             <p>Below, these three risks are rendered as simple bar comparisons so the structural imbalances are immediately visible.</p>
         </div>
@@ -197,33 +205,33 @@
     </section>
 
     <!-- ===== SECTION 4: THE HORIZON ===== -->
-    <section class="mb-20">
-        <div class="text-xs uppercase tracking-[.18em] text-indigo-400 mb-2">Section 4 / The Horizon</div>
-        <h2 class="text-3xl font-bold mb-4">What comes next for this core?</h2>
-        <div class="mb-8 relative">
-            <img src="./assets/arena_exterior.png" alt="Arena Exterior" class="w-full h-64 md:h-80 object-cover rounded-2xl border border-slate-800 shadow-xl opacity-85">
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-transparent via-transparent to-[#080f1e]"></div>
+    <section class="mb-24">
+        <div class="text-xs font-bold uppercase tracking-[.18em] text-cyan-400 mb-3">Section 4 / The Horizon</div>
+        <h2 class="text-3xl font-black text-white tracking-tight mb-5">What comes next for this core?</h2>
+        <div class="mb-10 img-container relative">
+            <img src="./assets/arena_exterior.png" alt="Arena Exterior" class="w-full h-[360px] object-cover opacity-90">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0f18] via-transparent to-transparent"></div>
         </div>
-        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
+        <div class="max-w-3xl text-slate-300 leading-relaxed space-y-5 mb-8 font-light">
             <p>While the data provides a snapshot of the present, the ceiling of this roster depends on internal development and future assets. 
-            <strong>Ace Bailey's</strong> trajectory is the ultimate x-factor. As he develops from a secondary connector into a reliable, high-volume two-way wing, 
+            <strong class="text-white font-medium">Ace Bailey's</strong> trajectory is the ultimate x-factor. As he develops from a secondary connector into a reliable, high-volume two-way wing, 
             he will bridge the structural gap between the backcourt and the bigs, elevating the Jazz from a fun experiment to a legitimate contender.</p>
-            <p>Looking ahead to the loaded <strong>2026 NBA Draft</strong>, the Jazz front office is armed with draft capital and a clear blueprint. 
+            <p>Looking ahead to the loaded <strong class="text-white font-medium">2026 NBA Draft</strong>, the Jazz front office is armed with draft capital and a clear blueprint. 
             Given the structural risks identified above—particularly the playmaking bottleneck—the optimal move would be targeting a high-IQ, pass-first point guard to relieve Keyonte George of primary initiation duties. Alternatively, drafting another premium 3-and-D wing could provide vital insurance for the perimeter spacing and further solidify the intimidating defensive wall built by JJJ and Kessler.</p>
         </div>
     </section>
 
-    <footer class="border-t border-slate-800 pt-8 text-xs text-slate-500 space-y-2 pb-12">
-        <p><strong class="text-slate-300">Data Source:</strong>
-            NBA Stats via <code>nba_api</code> Python package (ShotChartDetail &amp; LeagueDashPlayerStats endpoints),
+    <footer class="border-t border-slate-800/60 pt-10 text-xs text-slate-500 space-y-3 pb-16 font-medium">
+        <p><strong class="text-slate-400">Data Source:</strong>
+            NBA Stats via <code class="bg-slate-800/50 px-1.5 py-0.5 rounded text-slate-300">nba_api</code> Python package (ShotChartDetail &amp; LeagueDashPlayerStats endpoints),
             2025-26 Regular Season. <span id="meta-timestamp"></span></p>
-        <p><strong class="text-slate-300">Original Story:</strong>
+        <p><strong class="text-slate-400">Original Story:</strong>
             <a class="src" href="https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft" target="_blank">
                 "Why I'm Obsessed With the New-Look Utah Jazz"</a> by Michael Pina, The Ringer, Feb 3 2026.</p>
-        <p><strong class="text-slate-300">AI Usage:</strong>
+        <p><strong class="text-slate-400">AI Usage:</strong>
             Claude (Anthropic) was used for debugging, copy-editing, code scaffolding, and background research.
             The story angle, data pipeline, visualization designs, and narrative structure are the author's own work.</p>
-        <p><strong class="text-slate-300">Method Notes:</strong>
+        <p><strong class="text-slate-400">Method Notes:</strong>
             Role chart scores are min-max normalized proxies; rim protection uses blocks/game as an approximation.
             Sample sizes differ sharply across players (see Section 3).</p>
     </footer>
@@ -391,7 +399,7 @@
             const efg   = fga ? (((fgm+0.5*tpm)/fga)*100).toFixed(1) : "0.0";
 
             const chip = container.append("div")
-                .attr("class","chip rounded-xl bg-slate-900/70 border border-slate-800 p-3")
+                .attr("class","chip rounded-xl p-3")
                 .attr("data-player", player)
                 .on("click", () => {
                     if (activePlayers.has(player)) {
@@ -402,13 +410,13 @@
 
             const row = chip.append("div").attr("class","flex items-center gap-2 mb-2");
             row.append("div").style("width","12px").style("height","12px").style("border-radius","50%").style("background",COLOR(player));
-            row.append("span").attr("class","font-semibold text-sm text-slate-100").text(player);
+            row.append("span").attr("class","font-bold text-sm text-slate-200").text(player);
 
             const g = chip.append("div").attr("class","grid grid-cols-3 gap-1 text-center text-[10px]");
             [["FGA",fga],["FG%",fgPct+"%"],["eFG%",efg+"%"]].forEach(([l,v])=>{
-                const b=g.append("div").attr("class","rounded bg-slate-950 py-1");
-                b.append("div").attr("class","text-slate-500 uppercase font-bold").text(l);
-                b.append("div").attr("class","text-slate-300").text(v);
+                const b=g.append("div").attr("class","rounded bg-slate-800/50 py-1 border border-slate-700/50 backdrop-blur-sm");
+                b.append("div").attr("class","text-slate-400 uppercase font-bold").text(l);
+                b.append("div").attr("class","text-slate-300 font-semibold").text(v);
             });
         });
     }
@@ -458,21 +466,21 @@
         PLAYERS.forEach((p,i) => {
             const lx = i * 140;
             leg.append("rect").attr("x",lx).attr("y",0).attr("width",12).attr("height",12).attr("rx",2).attr("fill",COLOR(p));
-            leg.append("text").attr("x",lx+16).attr("y",10).attr("fill","#cbd5e1").attr("font-size",11).text(SHORT[p]);
+            leg.append("text").attr("x",lx+16).attr("y",10).attr("fill","#e2e8f0").attr("font-size",11).attr("font-weight", 600).text(SHORT[p]);
         });
 
         // axis
         rSvg.append("g").attr("transform",`translate(${mLeft},${mTop - 4})`)
             .call(d3.axisTop(xScale).ticks(5).tickSize(0).tickFormat(d => d))
             .call(g => g.select(".domain").remove())
-            .call(g => g.selectAll("text").attr("fill","#64748b").attr("font-size",10));
+            .call(g => g.selectAll("text").attr("fill","#94a3b8").attr("font-size",10).attr("font-weight", 500));
 
         // grid lines
         xScale.ticks(5).forEach(t => {
             rSvg.append("line")
                 .attr("x1", mLeft + xScale(t)).attr("x2", mLeft + xScale(t))
                 .attr("y1", mTop).attr("y2", mTop + METRICS.length * rowH)
-                .attr("stroke","rgba(148,163,184,.12)").attr("stroke-dasharray","3,4");
+                .attr("stroke","rgba(100,116,139,.15)").attr("stroke-dasharray","3,4");
         });
 
         METRICS.forEach((metric, mi) => {
@@ -481,14 +489,14 @@
 
             rSvg.append("text")
                 .attr("x", mLeft - 15).attr("y", gy + groupH / 2 + 4)
-                .attr("text-anchor","end").attr("fill","#94a3b8").attr("font-size",12).attr("font-weight",600)
+                .attr("text-anchor","end").attr("fill","#cbd5e1").attr("font-size",12).attr("font-weight",700)
                 .text(metric);
 
             if (mi < METRICS.length - 1) {
                 rSvg.append("line")
                     .attr("x1", mLeft).attr("x2", chartW - mRight)
                     .attr("y1", gy + rowH).attr("y2", gy + rowH)
-                    .attr("stroke","rgba(148,163,184,.08)");
+                    .attr("stroke","rgba(255,255,255,.05)");
             }
 
             PLAYERS.forEach((player, pi) => {
@@ -501,14 +509,14 @@
                 rSvg.append("rect")
                     .attr("x", mLeft).attr("y", by)
                     .attr("width", barAreaW).attr("height", barH)
-                    .attr("fill", "rgba(30,41,59,.3)").attr("rx", 3);
+                    .attr("fill", "rgba(30,41,59,.4)").attr("rx", 3);
 
                 const barWidth = Math.max(3, xScale(item.score)); // minimum width so 0 is visible
 
                 rSvg.append("rect").attr("class","role-bar")
                     .attr("x", mLeft).attr("y", by)
                     .attr("width", 0).attr("height", barH).attr("rx", 3)
-                    .attr("fill", COLOR(player)).attr("opacity", 0.85)
+                    .attr("fill", COLOR(player)).attr("opacity", 0.9)
                     .on("mouseenter", function(ev) {
                         d3.select(this).attr("opacity",1).attr("filter","brightness(1.2)");
                         showTip(ev,
@@ -518,7 +526,7 @@
                         );
                     })
                     .on("mousemove", ev => { tip.style.left=(ev.clientX+14)+"px"; tip.style.top=(ev.clientY-10)+"px"; })
-                    .on("mouseleave", function() { d3.select(this).attr("opacity",0.85).attr("filter",null); hideTip(); })
+                    .on("mouseleave", function() { d3.select(this).attr("opacity",0.9).attr("filter",null); hideTip(); })
                     .on("click", () => {
                         applyFocus(player, item.focus_zones, `${SHORT[player]} — ${metric}`);
                         // Scroll smoothly back to the top section
@@ -532,7 +540,7 @@
                         .attr("x", mLeft + barWidth - 4)
                         .attr("y", by + barH - 1.5)
                         .attr("text-anchor","end")
-                        .attr("fill", item.score > 50 ? "rgba(15,23,42,.75)" : "rgba(226,232,240,.7)")
+                        .attr("fill", item.score > 50 ? "rgba(15,23,42,.9)" : "rgba(226,232,240,.9)")
                         .attr("font-size", 7.5).attr("font-weight", 800)
                         .style("pointer-events","none")
                         .text(item.score.toFixed(0))
@@ -551,12 +559,12 @@
 
         cards.forEach(card => {
             const div = container.append("div")
-                .attr("class","bg-slate-900/60 rounded-2xl border border-slate-800 p-5");
-            div.append("div").attr("class","text-xs uppercase tracking-wide text-rose-400 mb-1").text(card.subtitle);
-            div.append("h3").attr("class","text-lg font-bold mb-4 leading-snug text-slate-100").text(card.title);
+                .attr("class","bg-slate-900/40 rounded-2xl border border-slate-800 backdrop-blur-sm p-6 shadow-xl");
+            div.append("div").attr("class","text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1.5").text(card.subtitle);
+            div.append("h3").attr("class","text-lg font-black mb-5 leading-snug text-white tracking-tight").text(card.title);
 
             const sorted = [...card.items].sort((a,b) => b.value - a.value);
-            const barW = 280, rowH = 34;
+            const barW = 280, rowH = 36;
             const barH = sorted.length * rowH + 8;
             const maxVal = d3.max(sorted, d => d.value);
             const bx = d3.scaleLinear().domain([0, maxVal * 1.15]).range([0, barW - 120]);
@@ -567,31 +575,38 @@
                 const y = i * rowH + 4;
                 bSvg.append("text")
                     .attr("x",58).attr("y",y+20)
-                    .attr("text-anchor","end").attr("fill","#94a3b8").attr("font-size",11)
+                    .attr("text-anchor","end").attr("fill","#94a3b8").attr("font-size",11).attr("font-weight", 600)
                     .text(SHORT[item.player]);
 
+                // Track background
+                bSvg.append("rect")
+                    .attr("x",65).attr("y",y+6).attr("width", barW - 120).attr("height",18).attr("rx", 3)
+                    .attr("fill","rgba(30,41,59,.4)");
+
+                const valWidth = Math.max(3, bx(item.value));
+
                 bSvg.append("rect").attr("class","risk-bar")
-                    .attr("x",65).attr("y",y+6).attr("width",0).attr("height",18)
-                    .attr("fill",COLOR(item.player)).attr("opacity",.75)
+                    .attr("x",65).attr("y",y+6).attr("width",0).attr("height",18).attr("rx", 3)
+                    .attr("fill",COLOR(item.player)).attr("opacity",.9)
                     .on("mouseenter", function(ev) {
-                        d3.select(this).attr("opacity",1);
+                        d3.select(this).attr("opacity",1).attr("filter","brightness(1.2)");
                         applyFocus(item.player, null, `${SHORT[item.player]} — ${card.metric_label}`);
                     })
-                    .on("mouseleave", function() { d3.select(this).attr("opacity",.75); })
+                    .on("mouseleave", function() { d3.select(this).attr("opacity",.9).attr("filter",null); })
                     .on("click", function() {
                         document.querySelector('#shot-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
                     })
                     .transition().duration(500).delay(i*70)
-                    .attr("width", bx(item.value));
+                    .attr("width", valWidth);
 
                 bSvg.append("text")
-                    .attr("x", 65 + bx(item.value) + 6).attr("y", y+20)
-                    .attr("fill","#e2e8f0").attr("font-size",12).attr("font-weight",700)
+                    .attr("x", 65 + valWidth + 8).attr("y", y+20)
+                    .attr("fill","#f1f5f9").attr("font-size",12).attr("font-weight",800)
                     .text(item.value)
                     .attr("opacity",0).transition().delay(i*70+450).attr("opacity",1);
             });
 
-            div.append("p").attr("class","text-xs text-slate-500 mt-4 leading-relaxed").text(card.narrative);
+            div.append("p").attr("class","text-xs text-slate-400 font-medium mt-6 leading-relaxed").text(card.narrative);
         });
     }
 
