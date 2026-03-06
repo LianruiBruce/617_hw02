@@ -740,7 +740,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "三分产量与命中率的组合代理。"
+      "description": "Proxy combination of 3-point volume and efficiency."
     },
     {
       "player": "Keyonte George",
@@ -751,7 +751,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "三分产量与命中率的组合代理。"
+      "description": "Proxy combination of 3-point volume and efficiency."
     },
     {
       "player": "Lauri Markkanen",
@@ -762,7 +762,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "三分产量与命中率的组合代理。"
+      "description": "Proxy combination of 3-point volume and efficiency."
     },
     {
       "player": "Jaren Jackson Jr.",
@@ -773,7 +773,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "三分产量与命中率的组合代理。"
+      "description": "Proxy combination of 3-point volume and efficiency."
     },
     {
       "player": "Ace Bailey",
@@ -784,7 +784,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "三分产量与命中率的组合代理。"
+      "description": "Proxy combination of 3-point volume and efficiency."
     },
     {
       "player": "Walker Kessler",
@@ -795,7 +795,7 @@
         "At Rim",
         "Paint / Floater"
       ],
-      "description": "靠近篮筐与短距离区域的出手占比代理。"
+      "description": "Proxy for shot attempts near the rim and short distance areas."
     },
     {
       "player": "Keyonte George",
@@ -806,7 +806,7 @@
         "At Rim",
         "Paint / Floater"
       ],
-      "description": "靠近篮筐与短距离区域的出手占比代理。"
+      "description": "Proxy for shot attempts near the rim and short distance areas."
     },
     {
       "player": "Lauri Markkanen",
@@ -817,7 +817,7 @@
         "At Rim",
         "Paint / Floater"
       ],
-      "description": "靠近篮筐与短距离区域的出手占比代理。"
+      "description": "Proxy for shot attempts near the rim and short distance areas."
     },
     {
       "player": "Jaren Jackson Jr.",
@@ -828,7 +828,7 @@
         "At Rim",
         "Paint / Floater"
       ],
-      "description": "靠近篮筐与短距离区域的出手占比代理。"
+      "description": "Proxy for shot attempts near the rim and short distance areas."
     },
     {
       "player": "Ace Bailey",
@@ -839,7 +839,7 @@
         "At Rim",
         "Paint / Floater"
       ],
-      "description": "靠近篮筐与短距离区域的出手占比代理。"
+      "description": "Proxy for shot attempts near the rim and short distance areas."
     },
     {
       "player": "Walker Kessler",
@@ -851,7 +851,7 @@
         "Midrange",
         "Above Break 3"
       ],
-      "description": "助攻与自创跳投/突破占比的组合代理。"
+      "description": "Proxy for playmaking and unassisted shot creation."
     },
     {
       "player": "Keyonte George",
@@ -863,7 +863,7 @@
         "Midrange",
         "Above Break 3"
       ],
-      "description": "助攻与自创跳投/突破占比的组合代理。"
+      "description": "Proxy for playmaking and unassisted shot creation."
     },
     {
       "player": "Lauri Markkanen",
@@ -875,7 +875,7 @@
         "Midrange",
         "Above Break 3"
       ],
-      "description": "助攻与自创跳投/突破占比的组合代理。"
+      "description": "Proxy for playmaking and unassisted shot creation."
     },
     {
       "player": "Jaren Jackson Jr.",
@@ -887,7 +887,7 @@
         "Midrange",
         "Above Break 3"
       ],
-      "description": "助攻与自创跳投/突破占比的组合代理。"
+      "description": "Proxy for playmaking and unassisted shot creation."
     },
     {
       "player": "Ace Bailey",
@@ -899,7 +899,7 @@
         "Midrange",
         "Above Break 3"
       ],
-      "description": "助攻与自创跳投/突破占比的组合代理。"
+      "description": "Proxy for playmaking and unassisted shot creation."
     },
     {
       "player": "Walker Kessler",
@@ -913,7 +913,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "赛季场均得分，表示进攻负荷。"
+      "description": "Average points per game, proxy for scoring burden."
     },
     {
       "player": "Keyonte George",
@@ -927,7 +927,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "赛季场均得分，表示进攻负荷。"
+      "description": "Average points per game, proxy for scoring burden."
     },
     {
       "player": "Lauri Markkanen",
@@ -941,7 +941,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "赛季场均得分，表示进攻负荷。"
+      "description": "Average points per game, proxy for scoring burden."
     },
     {
       "player": "Jaren Jackson Jr.",
@@ -955,7 +955,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "赛季场均得分，表示进攻负荷。"
+      "description": "Average points per game, proxy for scoring burden."
     },
     {
       "player": "Ace Bailey",
@@ -969,7 +969,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "赛季场均得分，表示进攻负荷。"
+      "description": "Average points per game, proxy for scoring burden."
     },
     {
       "player": "Walker Kessler",
@@ -979,7 +979,7 @@
       "focus_zones": [
         "At Rim"
       ],
-      "description": "用场均盖帽作为护框代理，属于防守端近似指标。"
+      "description": "Proxy for rim protection using blocks per game."
     },
     {
       "player": "Keyonte George",
@@ -989,7 +989,7 @@
       "focus_zones": [
         "At Rim"
       ],
-      "description": "用场均盖帽作为护框代理，属于防守端近似指标。"
+      "description": "Proxy for rim protection using blocks per game."
     },
     {
       "player": "Lauri Markkanen",
@@ -999,7 +999,7 @@
       "focus_zones": [
         "At Rim"
       ],
-      "description": "用场均盖帽作为护框代理，属于防守端近似指标。"
+      "description": "Proxy for rim protection using blocks per game."
     },
     {
       "player": "Jaren Jackson Jr.",
@@ -1009,7 +1009,7 @@
       "focus_zones": [
         "At Rim"
       ],
-      "description": "用场均盖帽作为护框代理，属于防守端近似指标。"
+      "description": "Proxy for rim protection using blocks per game."
     },
     {
       "player": "Ace Bailey",
@@ -1019,7 +1019,7 @@
       "focus_zones": [
         "At Rim"
       ],
-      "description": "用场均盖帽作为护框代理，属于防守端近似指标。"
+      "description": "Proxy for rim protection using blocks per game."
     },
     {
       "player": "Walker Kessler",
@@ -1033,7 +1033,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "覆盖多个区域并保持一定投射占比的能力代理。"
+      "description": "Proxy for ability to shoot across multiple court zones."
     },
     {
       "player": "Keyonte George",
@@ -1047,7 +1047,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "覆盖多个区域并保持一定投射占比的能力代理。"
+      "description": "Proxy for ability to shoot across multiple court zones."
     },
     {
       "player": "Lauri Markkanen",
@@ -1061,7 +1061,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "覆盖多个区域并保持一定投射占比的能力代理。"
+      "description": "Proxy for ability to shoot across multiple court zones."
     },
     {
       "player": "Jaren Jackson Jr.",
@@ -1075,7 +1075,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "覆盖多个区域并保持一定投射占比的能力代理。"
+      "description": "Proxy for ability to shoot across multiple court zones."
     },
     {
       "player": "Ace Bailey",
@@ -1089,7 +1089,7 @@
         "Corner 3",
         "Above Break 3"
       ],
-      "description": "覆盖多个区域并保持一定投射占比的能力代理。"
+      "description": "Proxy for ability to shoot across multiple court zones."
     }
   ],
   "risk_cards": [

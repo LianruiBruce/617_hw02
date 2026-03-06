@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paper Puzzle or Real Answer? A Data Remix of the New-Look Utah Jazz</title>
+    <title>A New Geometry in Salt Lake: Deconstructing the Utah Jazz Starting Five</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -45,8 +45,8 @@
     <header class="mb-14">
         <div class="text-xs uppercase tracking-[.22em] text-teal-400 mb-3">Data Story Remix &middot; 2025-26 Season</div>
         <h1 class="text-4xl md:text-5xl font-black leading-tight max-w-4xl">
-            Paper Puzzle or Real Answer?
-            <span class="text-teal-300">Can the New Utah Jazz Starting Five Survive a Data Check?</span>
+            A New Geometry in Salt Lake:
+            <span class="text-teal-300">Deconstructing the Utah Jazz Starting Five</span>
         </h1>
         <p class="max-w-3xl text-slate-400 text-lg mt-5 leading-relaxed">
             Michael Pina's <a class="src" href="https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft" target="_blank">article on The Ringer</a>
@@ -54,8 +54,12 @@
             <strong class="text-slate-200">Walker Kessler, Keyonte George, Lauri Markkanen, Jaren Jackson Jr., and Ace Bailey.</strong>
             This remix keeps the optimism but asks three harder questions, each backed by a different visualization.
         </p>
+        <div class="mt-8 mb-6 relative">
+            <img src="./assets/jazz_arena.png" alt="Utah Jazz Arena Concept" class="w-full h-72 object-cover rounded-2xl border border-slate-800 shadow-2xl opacity-90">
+            <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-[#080f1e] via-transparent to-transparent"></div>
+        </div>
         <div class="flex flex-wrap gap-3 mt-5 text-xs text-slate-300">
-            <span class="bg-slate-800/80 rounded-full px-3 py-1.5">Author: Gengl</span>
+            <span class="bg-slate-800/80 rounded-full px-3 py-1.5">Author: Lianrui Geng</span>
             <span class="bg-slate-800/80 rounded-full px-3 py-1.5">Original Author: Michael Pina / The Ringer</span>
         </div>
         <div id="data-status" class="mt-4 text-xs text-slate-500"></div>
@@ -65,11 +69,16 @@
     <section class="mb-20">
         <div class="text-xs uppercase tracking-[.18em] text-cyan-400 mb-2">Section 1 / Space</div>
         <h2 class="text-3xl font-bold mb-4">The first layer of optimism comes from geometry.</h2>
-        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-3 mb-6">
-            <p>The original article's most magnetic idea is spatial: Markkanen stretches defenders to the arc,
-                JJJ operates from the elbow and short corner, George creates off the dribble, Bailey roams the
-                weak side, and Kessler anchors the rim. If you squint at a half-court, it almost looks like a
-                perfectly tiled floor.</p>
+        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
+            <p>The original article's central premise hinges on spatial distribution: Markkanen operates beyond the arc,
+                JJJ attacks from the elbow and short corner, George creates off the dribble on the perimeter, Bailey utilizes the
+                weak side, and Kessler anchors the low block. Theoretically, this limits offensive redundancy and maximizes half-court real estate.</p>
+            <p>Drilling deeper into the geometry, this configuration theoretically solves modern NBA spacing issues. 
+                <strong>Lauri Markkanen's</strong> elite perimeter gravity is the linchpin—he forces opposing power forwards out of the paint, 
+                creating massive, uncluttered driving lanes for <strong>Keyonte George</strong> and <strong>Ace Bailey</strong>. 
+                Meanwhile, <strong>Jaren Jackson Jr.'s</strong> ability to spot up from the corner or elbow prevents the dreaded "twin-tower" spacing collapse. 
+                Because JJJ can pull his defender away from the basket, <strong>Walker Kessler</strong> is left free to operate exclusively 
+                as an interior lob threat and offensive rebounder without clogging the lane for drivers.</p>
             <p>This chart plots every recorded field-goal attempt for the five projected starters this season.
                 Click any player chip to toggle visibility, or click a dot to inspect a single shot.
                 Section 2's role chart can also drive focusing here.</p>
@@ -88,7 +97,7 @@
                     <label class="flex items-center gap-2 text-sm text-slate-300">
                         Show
                         <select id="shot-mode" class="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200 text-sm">
-                            <option value="all" selected>All shots</option><option value="made">Makes only</option>
+                            <option value="all" selected>All shots</option><option value="made">Makes only</option><option value="missed">Misses only</option>
                         </select>
                     </label>
                     <button id="clear-focus" class="ml-auto rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-slate-400 hover:text-white transition-colors">Reset&nbsp;view</button>
@@ -138,11 +147,19 @@
     <section class="mb-20">
         <div class="text-xs uppercase tracking-[.18em] text-amber-400 mb-2">Section 2 / Roles</div>
         <h2 class="text-3xl font-bold mb-4">Do the five roles complement or overlap?</h2>
-        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-3 mb-6">
+        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
             <p>Spacing alone doesn't win. A functional starting five needs floor spacing,
                 rim pressure, shot creation, scoring load, rim protection, and shot versatility &mdash;
-                without too much redundancy. Each row below compares the five starters on one dimension.
-                The wider a player's bar, the higher their score on that metric (0&ndash;100, min-max normalized).</p>
+                without too much redundancy. The newly constructed Jazz roster presents a fascinating division of labor.</p>
+            <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                <li><strong class="text-amber-300">The Engines:</strong> <span class="text-slate-400">Keyonte George and Lauri Markkanen shoulder the massive offensive burden. George acts as the primary shot creator and perimeter initiator, while Markkanen operates as the ultimate versatile scoring weapon across all three levels.</span></li>
+                <li><strong class="text-amber-300">The Twin Towers:</strong> <span class="text-slate-400">Walker Kessler and Jaren Jackson Jr. form a terrifying defensive frontcourt that fundamentally solves Utah's heavily criticized, historically porous defense. Kessler anchors the paint with traditional drop coverage, while JJJ provides elite weak-side rim protection and perimeter switchability. Crucially, JJJ's outside shooting prevents offensive redundancy, keeping the paint clear for Kessler.</span></li>
+                <li><strong class="text-amber-300">The Wildcard Wing:</strong> <span class="text-slate-400">Ace Bailey fills the vital wing connector role, offering secondary rim pressure, athletic finishing, and defensive flexibility to bridge the gap between the guards and the bigs.</span></li>
+            </ul>
+            <p>Each row below compares the five starters on these dimensions.
+                The wider a player's bar, the higher their relative score on that metric (0&ndash;100, min-max normalized across the five players).
+                <em class="text-slate-500 block mt-2 text-sm">Note: Because scores are relative, the lowest performer in each category receives a score of 0. Also, Walker Kessler and Jaren Jackson Jr. have significantly smaller sample sizes in this dataset, which naturally skews volume-based metrics downward for them.</em>
+            </p>
             <p><strong class="text-slate-200">Hover any bar</strong> for details.
                 <strong class="text-slate-200">Click any bar</strong> to focus the shot map above
                 on that player's relevant court zones &mdash; the view-coordination bridge between
@@ -157,13 +174,31 @@
     <section class="mb-20">
         <div class="text-xs uppercase tracking-[.18em] text-rose-400 mb-2">Section 3 / Risks</div>
         <h2 class="text-3xl font-bold mb-4">Where does the optimism break?</h2>
-        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-3 mb-6">
+        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
             <p>Every compelling narrative has blind spots.
-                The original article acknowledges that Jackson "permanently resides in foul trouble" but mostly
-                frames the trade as upside. Below are three structural risks the data can surface right now,
-                each rendered as a simple bar comparison so the imbalance is immediately visible.</p>
+                While the original article acknowledges that Jackson "permanently resides in foul trouble," it mostly
+                frames the roster construction as pure upside. However, the data points to three clear structural risks that could derail this paper puzzle:</p>
+            <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                <li><strong class="text-rose-300">Sample Size & Chemistry:</strong> <span class="text-slate-400">The frontcourt pairing of Jackson Jr. and Kessler, while devastating on paper, has an extremely limited shared data sample (Kessler and JJJ combine for very few games in the current dataset compared to the guards). Building cohesive defensive rotations and offensive flow takes time.</span></li>
+                <li><strong class="text-rose-300">Playmaking Bottleneck:</strong> <span class="text-slate-400">The offense leans overwhelmingly on Keyonte George for shot creation and initiation. If opposing defenses trap him or if he goes cold, the half-court offense risks stagnating into isolation plays.</span></li>
+                <li><strong class="text-rose-300">Spacing Fragility:</strong> <span class="text-slate-400">Despite the narrative of a stretched floor, the actual volume of high-efficiency three-point shooting is heavily concentrated in Markkanen and George. With Kessler a non-shooter and Bailey developing, an injury to either of the two lead guards could compromise the court's pristine geometry.</span></li>
+            </ul>
+            <p>Below, these three risks are rendered as simple bar comparisons so the structural imbalances are immediately visible.</p>
         </div>
         <div id="risk-cards" class="grid gap-6 md:grid-cols-3"></div>
+    </section>
+
+    <!-- ===== SECTION 4: THE HORIZON ===== -->
+    <section class="mb-20">
+        <div class="text-xs uppercase tracking-[.18em] text-indigo-400 mb-2">Section 4 / The Horizon</div>
+        <h2 class="text-3xl font-bold mb-4">What comes next for this core?</h2>
+        <div class="max-w-3xl text-slate-400 leading-relaxed space-y-4 mb-6">
+            <p>While the data provides a snapshot of the present, the ceiling of this roster depends on internal development and future assets. 
+            <strong>Ace Bailey's</strong> trajectory is the ultimate x-factor. As he develops from a secondary connector into a reliable, high-volume two-way wing, 
+            he will bridge the structural gap between the backcourt and the bigs, elevating the Jazz from a fun experiment to a legitimate contender.</p>
+            <p>Looking ahead to the loaded <strong>2026 NBA Draft</strong>, the Jazz front office is armed with draft capital and a clear blueprint. 
+            Given the structural risks identified above—particularly the playmaking bottleneck—the optimal move would be targeting a high-IQ, pass-first point guard to relieve Keyonte George of primary initiation duties. Alternatively, drafting another premium 3-and-D wing could provide vital insurance for the perimeter spacing and further solidify the intimidating defensive wall built by JJJ and Kessler.</p>
+        </div>
     </section>
 
     <footer class="border-t border-slate-800 pt-8 text-xs text-slate-500 space-y-2 pb-12">
@@ -262,6 +297,7 @@
     function getFilteredShots() {
         let f = displayData.filter(d => activePlayers.has(d.player));
         if (shotMode === "made") f = f.filter(d => d.made === 1);
+        else if (shotMode === "missed") f = f.filter(d => d.made === 0);
         if (focusPlayer) f = f.filter(d => d.player === focusPlayer);
         if (focusZones) f = f.filter(d => focusZones.includes(d.zone));
         return f;
@@ -393,7 +429,7 @@
         if (!metrics.length) return;
 
         const mLeft = 145, mRight = 30, mTop = 50, mBot = 20;
-        const rowH = 48, barH = 7, barGap = 1;
+        const rowH = 72, barH = 8, barGap = 3; // Increased spacing and bar height for elegance
         const groupH = PLAYERS.length * (barH + barGap);
         const totalH = mTop + METRICS.length * rowH + mBot;
         const chartW = 780;
@@ -432,7 +468,7 @@
             const groupY = gy + (rowH - groupH) / 2;
 
             rSvg.append("text")
-                .attr("x", mLeft - 10).attr("y", gy + rowH / 2 + 4)
+                .attr("x", mLeft - 15).attr("y", gy + groupH / 2 + 4)
                 .attr("text-anchor","end").attr("fill","#94a3b8").attr("font-size",12).attr("font-weight",600)
                 .text(metric);
 
@@ -449,12 +485,20 @@
 
                 const by = groupY + pi * (barH + barGap);
 
+                // Background track for each bar slot
+                rSvg.append("rect")
+                    .attr("x", mLeft).attr("y", by)
+                    .attr("width", barAreaW).attr("height", barH)
+                    .attr("fill", "rgba(30,41,59,.3)").attr("rx", 3);
+
+                const barWidth = Math.max(3, xScale(item.score)); // minimum width so 0 is visible
+
                 rSvg.append("rect").attr("class","role-bar")
                     .attr("x", mLeft).attr("y", by)
-                    .attr("width", 0).attr("height", barH)
-                    .attr("fill", COLOR(player)).attr("opacity", 0.8)
+                    .attr("width", 0).attr("height", barH).attr("rx", 3)
+                    .attr("fill", COLOR(player)).attr("opacity", 0.85)
                     .on("mouseenter", function(ev) {
-                        d3.select(this).attr("opacity",1);
+                        d3.select(this).attr("opacity",1).attr("filter","brightness(1.2)");
                         showTip(ev,
                             `<strong style="color:${COLOR(player)}">${player}</strong><br>` +
                             `<strong>${metric}</strong>: ${item.score.toFixed(0)} / 100<br>` +
@@ -462,18 +506,22 @@
                         );
                     })
                     .on("mousemove", ev => { tip.style.left=(ev.clientX+14)+"px"; tip.style.top=(ev.clientY-10)+"px"; })
-                    .on("mouseleave", function() { d3.select(this).attr("opacity",0.8); hideTip(); })
-                    .on("click", () => applyFocus(player, item.focus_zones, `${SHORT[player]} — ${metric}`))
+                    .on("mouseleave", function() { d3.select(this).attr("opacity",0.85).attr("filter",null); hideTip(); })
+                    .on("click", () => {
+                        applyFocus(player, item.focus_zones, `${SHORT[player]} — ${metric}`);
+                        // Scroll smoothly back to the top section
+                        document.querySelector('#shot-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    })
                     .transition().duration(500).delay(mi*60 + pi*30)
-                    .attr("width", xScale(item.score));
+                    .attr("width", barWidth);
 
                 if (item.score > 8) {
                     rSvg.append("text")
-                        .attr("x", mLeft + xScale(item.score) - 4)
-                        .attr("y", by + barH - 1)
+                        .attr("x", mLeft + barWidth - 4)
+                        .attr("y", by + barH - 1.5)
                         .attr("text-anchor","end")
-                        .attr("fill", item.score > 50 ? "rgba(15,23,42,.7)" : "rgba(226,232,240,.6)")
-                        .attr("font-size", 8).attr("font-weight", 700)
+                        .attr("fill", item.score > 50 ? "rgba(15,23,42,.75)" : "rgba(226,232,240,.7)")
+                        .attr("font-size", 7.5).attr("font-weight", 800)
                         .style("pointer-events","none")
                         .text(item.score.toFixed(0))
                         .attr("opacity",0).transition().delay(mi*60+pi*30+400).attr("opacity",1);
@@ -516,6 +564,8 @@
                     .on("mouseenter", function(ev) {
                         d3.select(this).attr("opacity",1);
                         applyFocus(item.player, null, `${SHORT[item.player]} — ${card.metric_label}`);
+                        // Scroll smoothly back to the top section
+                        document.querySelector('#shot-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
                     })
                     .on("mouseleave", function() { d3.select(this).attr("opacity",.75); })
                     .transition().duration(500).delay(i*70)
