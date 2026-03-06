@@ -1,90 +1,83 @@
-# HW02 — Data Story Remix: The New-Look Utah Jazz
+# HW02: Data Story Remix - A New Geometry in Salt Lake
 
-## Original Story
+**Author**: Lianrui Geng  
+**Original Story**: ["Why I’m Obsessed With the New-Look Utah Jazz"](https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft) by Michael Pina (The Ringer)  
+**Live Deployment**: [GitHub Pages Link Here] (Please update after pushing)
 
-**"Why I'm Obsessed With the New-Look Utah Jazz"**
-by Michael Pina, The Ringer, February 3, 2026.
-[Read the original article →](https://www.theringer.com/2026/02/03/nba/jaren-jackson-jr-trade-utah-jazz-lauri-markkanen-2026-nba-draft)
+---
 
-## Remix Summary
+## 1. Overview and Remix Intent
 
-The original article is an optimistic narrative about how the Jaren Jackson Jr. trade transforms the Jazz into a compelling team with a projected starting five of **Walker Kessler, Keyonte George, Lauri Markkanen, Jaren Jackson Jr., and Ace Bailey**. Pina argues that the pieces fit together spatially and functionally, with enough youth and draft capital to keep building.
+For this assignment, I chose to remix a recent sports journalism piece from *The Ringer* that enthusiastically praised the Utah Jazz's newly constructed starting five (Walker Kessler, Keyonte George, Lauri Markkanen, Jaren Jackson Jr., and Ace Bailey). The original article relied heavily on basketball theory, eye-test narratives, and isolated stats to argue that this lineup is a perfect modern basketball puzzle.
 
-My remix retains the optimism but restructures the argument into **three testable layers**, each supported by a different visualization:
+**My Remix Strategy:**
+Instead of just reiterating the original praise, I wanted to subject this "paper puzzle" to a rigorous data check. My remix transitions the piece from a purely enthusiastic op-ed into an analytical **Data Story**. I kept the core narrative regarding "spatial distribution" but challenged the optimism by visualizing the actual shot distributions, comparing the players' functional roles, and finally exposing the structural vulnerabilities (risks) of the roster using the latest 2025-26 season data.
 
-1. **Space** — Do the five players actually occupy different zones on the court?
-2. **Roles** — Do their functional profiles complement each other, or do they overlap?
-3. **Risks** — What structural weaknesses does the data reveal that the narrative glosses over?
+The resulting standalone webpage features three distinct, D3.js-powered interactive visualizations that guide the reader from the theoretical "geometry" of the court to the practical overlap of roles, and finally to the underlying risks of the lineup.
 
-This three-act structure turns the original essay-style argument into a data-driven narrative where the reader can interact with the evidence and form their own conclusions, rather than passively absorbing the author's enthusiasm.
+---
 
-## Visualizations
+## 2. Design Process and "Making Of"
 
-### Viz 1: Shot Map (D3, Interactive)
+### Step 1: Data Acquisition and Processing
+I started by writing a Python script (`hw02_getScoreData.py`) utilizing the `nba_api` package to fetch real-time, granular data for the 2025-26 regular season. 
+- I pulled every single shot attempt (`ShotChartDetail`) for the five players to understand their spatial tendencies.
+- I pulled basic season stats (`LeagueDashPlayerStats`) to build proxy metrics for their roles (e.g., scoring load, playmaking).
+- The python script processes this raw JSON data and outputs cleaned summaries (`jazz_story_summary.js` and `jazz_shots_data.js`) that are immediately readable by the frontend D3 script.
 
-A half-court scatter plot of every recorded field-goal attempt for the five projected starters in the 2025-26 season.
+### Step 2: Storyboarding the Visual Narrative
+I structured the webpage into three progressive sections:
+1.  **Section 1 / Space (The Optimism):** Visualizing the court geometry. I chose a **Shot Map (Scatter Plot)** overlaying a basketball court. I wanted the user to physically see if the players are crowding each other or spreading the floor.
+2.  **Section 2 / Roles (The Division of Labor):** Analyzing how the players' skills overlap. I designed a **Grouped Horizontal Bar Chart** comparing the five starters across six calculated metrics (Floor spacing, Rim pressure, Shot creation, etc.).
+3.  **Section 3 / Risks (The Blind Spots):** Providing the counter-argument. I designed **Small Multiples of Horizontal Bar Charts (Risk Cards)** to immediately highlight massive imbalances in sample size, playmaking burden, and spacing dependency.
 
-- **Design purpose**: Give readers an immediate spatial intuition for why the original article is optimistic — you can *see* that these five players tend to occupy different areas.
-- **Interactions**: Click player chips to filter; click individual dots to inspect shot details (action type, zone, distance, make/miss); density and filter controls; cross-chart focusing from Viz 2.
-- **Trade-offs**: With 2300+ shots, density is a problem. I added a sampling control (Sparse / Medium / Dense / All) so the user can balance readability vs. completeness. Stats in the legend always use the full dataset.
+### Step 3: Visual Design & Color Palette
+I aimed for a premium, cinematic "Dark Mode" aesthetic common in modern data journalism (like *The New York Times* or *The Pudding*). 
+-   **Background**: Deep navy/slate (`#0a0f18`) with glassmorphism (backdrop-blur) effects for the cards.
+-   **Color Coding**: Each of the five players was assigned a distinct, vibrant color (Green, Purple, Yellow, Blue, Orange) that remains strictly consistent across all three visualizations. This allows the reader's brain to quickly track a player without constantly referring to the legend.
+-   **Imagery**: I generated thematic, people-free images of Utah/basketball arenas to visually anchor each section without tying the piece to specific photographs that might age poorly.
 
-### Viz 2: Role Fit Matrix (D3, Interactive)
+---
 
-A player × role-dimension heatmap using six functional metrics: floor spacing, rim pressure, shot creation, scoring load, rim protection proxy, and shot versatility.
+## 3. Visualization Details & Interactivity (D3.js)
 
-- **Design purpose**: Move beyond spatial intuition to structural analysis. The matrix makes it immediately visible that, e.g., Kessler dominates rim pressure while George dominates shot creation — the roles don't redundantly overlap.
-- **Interactions**: Hover shows the metric description and raw score. **Click any cell** to trigger view coordination — the shot map above automatically filters to show only that player in the zones most relevant to that metric.
-- **Trade-offs**: The scores are min-max normalized proxies, not ground-truth advanced stats. Rim protection uses blocks/game as an approximation. I document this in the method notes and the story text.
+All three visualizations were custom-built using **D3.js v7**.
 
-### Viz 3: Risk Audit (D3, Interactive Bar Charts)
+### Viz 1: Interactive Court Shot Map (Scatter Plot)
+- **Design**: A scaled SVG drawing of a half-court, plotting individual shots as coordinates. Makes are solid circles; misses are semi-transparent outlines.
+- **Interactivity**: 
+  - **Filters**: Users can filter by shot density (sampling), and toggle between "All shots", "Makes only", or "Misses only".
+  - **Legend Toggles**: Clicking a player's chip in the legend toggles their shots on/off.
+  - **Tooltips/Drill-down**: Hovering over a dot shows basic info. Clicking a dot isolates that shot and populates a detailed "Shot Slice" dashboard UI on the right side.
 
-Three side-by-side bar chart cards, each addressing a specific structural risk:
+### Viz 2: Role Comparison Matrix (Grouped Horizontal Bars)
+- **Design**: A normalized (0-100) horizontal bar chart comparing the 5 players across 6 distinct basketball roles. The background track ensures players with a score of "0" are still visually represented as lacking in that area.
+- **Interactivity & View Coordination (Bells & Whistles)**: 
+  - Hovering over a bar reveals the exact score and the methodology (proxy description) for that metric.
+  - **View Coordination**: Clicking any bar triggers two actions: 
+    1. It filters the top Shot Map (Viz 1) to only show the relevant player and the court zones associated with that specific metric (e.g., clicking Kessler's "Rim Protection" focuses the map on Kessler's shots "At Rim").
+    2. It smoothly scrolls the user back up to the Shot Map to see the effect immediately.
 
-1. **Sample size imbalance**: Kessler (37 shots) and JJJ (49 shots) have drastically fewer logged attempts than George (839), Markkanen (805), and Bailey (628).
-2. **Creation burden**: George accounts for ~42% of the group's assists, making the ball-handling hierarchy narrow.
-3. **Spacing concentration**: Markkanen and George produce ~56% of the lineup's three-point volume.
+### Viz 3: Structural Risk Cards (Small Multiples)
+- **Design**: Three isolated horizontal bar charts acting as "warning cards." By removing the normalization used in Viz 2 and showing raw values, the stark disparity between the players (e.g., George having 800+ shots vs. JJJ having 49) becomes jarringly obvious.
+- **Interactivity & View Coordination**:
+  - Hovering over these bars applies a brightness filter and coordinates with the Shot Map above.
+  - Clicking the bars also smoothly scrolls the page back up to the connected map view.
 
-- **Design purpose**: Provide the counterargument that the original article largely omits. This is the "remix" turn — I'm not just restating Pina's optimism, I'm testing it.
-- **Interactions**: Hover on any bar to cross-highlight that player on the shot map (view coordination). Bars animate in on load.
-- **Trade-offs**: I kept these as simple horizontal bars rather than more complex charts because the point is immediate visual comparison, not deep exploration. The narrative text below each card provides context.
+---
 
-## View Coordination
+## 4. Bells & Whistles Attempted
 
-Clicking a cell in the Role Matrix (Viz 2) or hovering a bar in Risk Audit (Viz 3) triggers the Shot Map (Viz 1) to focus on the relevant player and zone subset. A "Clear focus" button resets the view. This bridges the three sections into a single interactive reading experience.
+1.  **View Coordination (2 pts)**: Heavily implemented. Both Viz 2 and Viz 3 act as interactive controllers for Viz 1. Clicking a specific role or risk metric automatically filters the Shot Map to the relevant player and zones, bridging the abstract role data with the physical court geometry. Smooth scrolling was added to ensure the user notices the linked interaction.
+2.  **Multiple Views / Counter-Argument (3 pts)**: The original story is purely optimistic about the trade. My remix deliberately dedicates Section 3 to forming a **counter-argument**. I use the data to explicitly highlight "blind spots" (Spacing Fragility, Playmaking Bottleneck, Chemistry/Sample Size) that could cause the lineup to fail, directly refuting the idea that it's a flawless "paper puzzle."
 
-## Data Pipeline
+---
 
-The data is collected via `hw02_getScoreData.py`, which:
+## 5. AI Usage Disclosure
+- **Tool**: Claude 3.5 Sonnet / Gemini 3.1 Pro (via Cursor IDE).
+- **Usage**: AI was utilized to scaffold the initial D3.js boilerplate, assist with the complex SVG math for drawing the basketball court arcs, and debug JavaScript event listeners (specifically fixing a bug with the smooth scrolling logic). AI was also used to generate the thematic background images (via DALL-E/Midjourney APIs) and copy-edit the narrative prose for a more journalistic tone. The overall narrative structure, data pipeline design, visualization concepts, and view coordination logic are my original work.
 
-1. Fetches shot chart data from `nba_api.ShotChartDetail` for all five players
-2. Fetches per-game stats from `nba_api.LeagueDashPlayerStats`
-3. Classifies each shot into zones (At Rim, Paint/Floater, Midrange, Corner 3, Above Break 3) and action buckets (Spot-Up, Self-Created, Paint Finish, Drive/Floater, Post Touch)
-4. Computes role proxy scores by combining shot distribution with per-game stats
-5. Generates risk card data (sample size, creation burden, spacing load)
-6. Outputs everything as both `.json` and `.js` files for offline browser compatibility
-
-## Design Process
-
-1. **Story selection**: I chose this article because it makes a strong spatial argument ("imagine these five on a court together") that is directly testable with shot chart data.
-2. **Angle development**: Rather than simply illustrating the original argument, I restructured it as a three-part test: space → roles → risks. This gives the remix an independent editorial voice.
-3. **Viz sketching**: I started with the shot map (which I had as a prototype), then designed the role matrix as a deliberately different visual form (heatmap vs. scatter) to satisfy the "noticeably different designs" requirement. The risk bars are a third distinct form.
-4. **View coordination**: I connected Viz 2 → Viz 1 clicks and Viz 3 → Viz 1 hovers so the three sections feel like one integrated story rather than three separate charts.
-5. **Counterargument**: Section 3 explicitly challenges the original article's optimism using the same data, satisfying the remix requirement that the story not simply restate the source material.
-
-## AI Usage
-
-- **Model**: Claude (Anthropic)
-- **How it was used**:
-  - Debugging Python data pipeline issues (nba_api parameter names, column availability)
-  - Code scaffolding for D3 court drawing and data binding patterns
-  - Copy-editing and proofreading narrative text
-  - Background research on NBA shot chart coordinate systems
-- **What is my own work**:
-  - Story angle and three-section narrative structure
-  - Choice of visualizations and their design rationale
-  - Data pipeline logic (zone classification, role proxy formulas, risk card generation)
-  - View coordination architecture
-  - All editorial decisions about what to include, emphasize, or challenge
+---
 
 ## Running Locally
 
@@ -94,7 +87,3 @@ pip install nba_api pandas
 python hw02_getScoreData.py
 # Then open index.html in a browser (works offline via .js data files)
 ```
-
-## Author
-
-**Lianrui Geng** — COMP 617, Spring 2026
